@@ -39,7 +39,7 @@ public class RequestsRepository {
                         , "Извините, всего доброго"
                         , null
                         , new State(1l, "Active", "Активен")
-                        , null
+                        , new ArrayList<Answers>()
                 )
         );
 
@@ -48,7 +48,7 @@ public class RequestsRepository {
                         , "Сам иди в пень, мудак!"
                         , null
                         , new State(1l, "Active", "Активен")
-                        , null
+                        , new ArrayList<Answers>()
                 )
         );
     }

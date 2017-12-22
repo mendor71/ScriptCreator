@@ -26,19 +26,18 @@ public class AnswersController {
     private AnswersRepository answersRepository;
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @RequestMapping(value = "/{answId}", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
-    public Resource<Answers> findById(@PathVariable Long answId) {
+    @RequestMapping(value = "/{answId}", method = RequestMethod.GET, produces = "application/hal+json")
+    public Answers findById(@PathVariable Long answId) {
         Answers a = answersRepository.findByAnswId(answId);
         a.removeLinks();
-
         a.add(linkTo(methodOn(AnswersController.class).getAnswerRequests(answId)).withRel("requestsList"));
 
-        return new Resource<Answers>(a);
+        return a;
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @RequestMapping(value = "/{answId}/requests", method = RequestMethod.GET)
-    public Resource getAnswerRequests(@PathVariable Long answId) {
+    @RequestMapping(value = "/{answId}/requests", method = RequestMethod.GET, produces = "application/hal+json")
+    public List<Requests> getAnswerRequests(@PathVariable Long answId) {
         Answers a = answersRepository.findByAnswId(answId);
         List<Requests> requests = a.getRequestsList();
 
@@ -47,6 +46,6 @@ public class AnswersController {
             r.add(linkTo(RequestsController.class).slash(r.getReqId()).withSelfRel());
         }
 
-        return new Resource(requests);
+        return requests;
     }
 }
