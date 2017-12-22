@@ -6,8 +6,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 
     <secutity:global-method-security secured-annotations="enabled" pre-post-annotations="enabled"/>
+    <!--entry-point-ref="restAuthEntryPoint"-->
     <secutity:http
-        entry-point-ref="restAuthEntryPoint"
         authentication-manager-ref="authenticationManager">
 
         <secutity:access-denied-handler error-page="/403"/>

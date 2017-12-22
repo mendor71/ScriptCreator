@@ -5,6 +5,7 @@ import org.springframework.hateoas.ResourceSupport;
 import java.util.List;
 
 public class Requests extends ResourceSupport {
+
     private Long reqId;
     private String reqText;
     private Category reqCategory;

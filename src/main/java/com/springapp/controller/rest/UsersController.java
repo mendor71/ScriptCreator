@@ -2,8 +2,9 @@ package com.springapp.controller.rest;
 
 import com.springapp.entity.Category;
 import com.springapp.entity.User;
-import com.springapp.service.UserRepository;
+import com.springapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 
@@ -18,6 +20,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 @RequestMapping(value = "/users")
 public class UsersController {
     @Autowired
+    @Qualifier(value = "appRepo")
     private UserRepository userRepository;
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -28,28 +31,28 @@ public class UsersController {
             user.removeLinks();
 
             user.add(linkTo(UsersController.class).slash(user.getUserId()).withSelfRel());
-            user.add(linkTo(methodOn(UsersController.class).getUserCategories(user.getUserId())).withRel("allCategories"));
+            //user.add(linkTo(methodOn(UsersController.class).getUserCategories(user.getUserId())).withRel("allCategories"));
         }
         return users;
     }
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
-    public User getUserById(@PathVariable Long userId) {
-        User user = userRepository.findById(userId);
-
+    public User getUserById(@PathVariable Integer userId) {
+        Optional<User> optional = userRepository.findById(userId);
+        User user = optional.get();
         user.removeLinks();
 
         user.add(linkTo(UsersController.class).slash(user.getUserId()).withSelfRel());
-        user.add(linkTo(methodOn(UsersController.class).getUserCategories(user.getUserId())).withRel("allCategories"));
+        //user.add(linkTo(methodOn(UsersController.class).getUserCategories(user.getUserId())).withRel("allCategories"));
         return user;
     }
 
-    @RequestMapping(value = "/{userId}/categories", method = RequestMethod.GET)
-    public List<Category> getUserCategories(@PathVariable Long userId) {
-        User user = userRepository.findById(userId);
-        List<Category> categories = user.getUserCategories();
-        return categories;
-    }
+//    @RequestMapping(value = "/{userId}/categories", method = RequestMethod.GET)
+//    public List<Category> getUserCategories(@PathVariable Long userId) {
+//        User user = userRepository.findById(userId);
+//        List<Category> categories = user.getUserCategories();
+//        return categories;
+//    }
 
 
 }

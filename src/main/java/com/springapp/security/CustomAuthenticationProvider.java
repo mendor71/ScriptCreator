@@ -1,8 +1,7 @@
 package com.springapp.security;
 
-import com.springapp.entity.Role;
 import com.springapp.entity.User;
-import com.springapp.service.UserRepository;
+import com.springapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -10,10 +9,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class CustomAuthenticationProvider implements AuthenticationProvider {
@@ -37,17 +36,21 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     }
 
     private UsernamePasswordAuthenticationToken authByUserNameAndPassword(String userName, String password) {
-        User user = userRepository.findByUserName(userName);
-        if (user == null) {
+        List<User> userList = userRepository.findAll();
+
+        if (userList.size() == 0) {
             throw new BadCredentialsException("1000");
         }
+
+        User user = userList.get(0);
+
         if (!passwordEncoder.matches(password, user.getUserPassword())) {
             throw new BadCredentialsException("1000");
         }
         Set<GrantedAuthority> roles = new HashSet<GrantedAuthority>();
-        for (Role r: user.getUserRoles()) {
+        /*for (Role r: user.getUserRoles()) {
             roles.add(new SimpleGrantedAuthority(r.getRoleName()));
-        }
+        }*/
         return new UsernamePasswordAuthenticationToken(userName, password, roles);
     }
 

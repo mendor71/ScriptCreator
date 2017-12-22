@@ -3,10 +3,12 @@ package com.springapp.entity;
 import org.springframework.hateoas.ResourceSupport;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @Entity
 public class Role extends ResourceSupport {
 
+    @Id
     private Long roleId;
     private String roleName;
 

@@ -2,7 +2,7 @@ package com.springapp.controller.rest;
 
 import com.springapp.entity.Answers;
 import com.springapp.entity.Requests;
-import com.springapp.service.RequestsRepository;
+import com.springapp.services.RequestsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;

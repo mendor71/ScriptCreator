@@ -2,11 +2,8 @@ package com.springapp.controller.rest;
 
 import com.springapp.entity.Answers;
 import com.springapp.entity.Requests;
-import com.springapp.service.AnswersRepository;
-import com.sun.tools.internal.ws.processor.model.Request;
+import com.springapp.services.AnswersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.MediaTypes;
-import org.springframework.hateoas.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
