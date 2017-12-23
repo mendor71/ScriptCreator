@@ -2,10 +2,7 @@ package com.springapp.entity;
 
 import org.springframework.hateoas.ResourceSupport;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +10,7 @@ import java.util.List;
 @Table(name = "users")
 public class User extends ResourceSupport {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Integer userId;
     @Column(name = "user_login")

@@ -20,10 +20,9 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 @RequestMapping(value = "/users")
 public class UsersController {
     @Autowired
-    @Qualifier(value = "appRepo")
     private UserRepository userRepository;
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    /*@PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public List<User> getAllUsers() {
         List<User> users = userRepository.findAll();
@@ -34,12 +33,11 @@ public class UsersController {
             //user.add(linkTo(methodOn(UsersController.class).getUserCategories(user.getUserId())).withRel("allCategories"));
         }
         return users;
-    }
+    }*/
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     public User getUserById(@PathVariable Integer userId) {
-        Optional<User> optional = userRepository.findById(userId);
-        User user = optional.get();
+        User user = userRepository.findOne(userId);
         user.removeLinks();
 
         user.add(linkTo(UsersController.class).slash(user.getUserId()).withSelfRel());

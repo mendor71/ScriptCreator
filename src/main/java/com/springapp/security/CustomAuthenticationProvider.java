@@ -36,7 +36,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     }
 
     private UsernamePasswordAuthenticationToken authByUserNameAndPassword(String userName, String password) {
-        List<User> userList = userRepository.findAll();
+        List<User> userList = userRepository.findByUserLogin(userName);
 
         if (userList.size() == 0) {
             throw new BadCredentialsException("1000");
