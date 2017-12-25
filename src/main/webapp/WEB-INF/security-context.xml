@@ -3,7 +3,8 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:secutity="http://www.springframework.org/schema/security"
        xmlns:security="http://www.springframework.org/schema/security"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+       xmlns:beans="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <secutity:global-method-security secured-annotations="enabled" pre-post-annotations="enabled"/>
     <!--entry-point-ref="restAuthEntryPoint"-->
@@ -15,10 +16,9 @@
         <secutity:form-login
             login-page="/login"
             login-processing-url="/j_spring_security_check"
-            authentication-failure-url="/login?error=true"
+            authentication-failure-handler-ref="authenticationFailureHandler"
             username-parameter="j_username"
             password-parameter="j_password"/>
-
         <security:logout
             logout-url="/logout"
             logout-success-url="/login?logout"
@@ -32,6 +32,16 @@
 
     <bean id="customAuthenticationProvider" class="com.springapp.security.CustomAuthenticationProvider">
         <property name="passwordEncoder" ref="bCryptEncoder"/>
+    </bean>
+
+    <bean id="authenticationFailureHandler"
+                class="org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler">
+        <property name="exceptionMappings">
+            <props>
+                <prop key="org.springframework.security.authentication.BadCredentialsException">/login/error?type=badCredentials</prop>
+                <prop key="org.springframework.security.authentication.DisabledException">/login/error?type=accountDisabled&amp;link=http://www.google.com</prop>
+            </props>
+        </property>
     </bean>
 
     <bean id="bCryptEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>

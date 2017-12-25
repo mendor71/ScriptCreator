@@ -2,25 +2,35 @@ package com.springapp.entity;
 
 import org.springframework.hateoas.ResourceSupport;
 
+import javax.persistence.*;
+import java.util.List;
+
+@Entity
+@Table(name = "public.states")
 public class State extends ResourceSupport {
-    private Long stateId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "state_id")
+    private Integer stateId;
+    @Column(name = "state_name")
     private String stateName;
-    private String stateNameLocale;
+    @Column(name = "state_localized_name")
+    private String stateLocalizedName;
 
     public State() {
     }
 
-    public State(Long stateId, String stateName, String stateNameLocale) {
+    public State(Integer stateId, String stateName, String stateNameLocale) {
         this.stateId = stateId;
         this.stateName = stateName;
-        this.stateNameLocale = stateNameLocale;
+        this.stateLocalizedName = stateNameLocale;
     }
 
-    public Long getStateId() {
+    public Integer getStateId() {
         return stateId;
     }
 
-    public void setStateId(Long stateId) {
+    public void setStateId(Integer stateId) {
         this.stateId = stateId;
     }
 
@@ -32,11 +42,11 @@ public class State extends ResourceSupport {
         this.stateName = stateName;
     }
 
-    public String getStateNameLocale() {
-        return stateNameLocale;
+    public String getStateLocalizedName() {
+        return stateLocalizedName;
     }
 
-    public void setStateNameLocale(String stateNameLocale) {
-        this.stateNameLocale = stateNameLocale;
+    public void setStateLocalizedName(String stateLocalizedName) {
+        this.stateLocalizedName = stateLocalizedName;
     }
 }

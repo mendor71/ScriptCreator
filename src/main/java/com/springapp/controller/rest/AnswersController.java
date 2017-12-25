@@ -1,31 +1,21 @@
 package com.springapp.controller.rest;
 
-import com.springapp.entity.Answers;
-import com.springapp.entity.Requests;
-import com.springapp.services.AnswersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping(value = "/answers")
 public class AnswersController {
 
-    @Autowired
+    /*@Autowired
     private AnswersRepository answersRepository;
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{answId}", method = RequestMethod.GET, produces = "application/hal+json")
-    public Answers findById(@PathVariable Long answId) {
-        Answers a = answersRepository.findByAnswId(answId);
+    public Response findById(@PathVariable Long answId) {
+        Response a = answersRepository.findByAnswId(answId);
         a.removeLinks();
         a.add(linkTo(methodOn(AnswersController.class).getAnswerRequests(answId)).withRel("requestsList"));
 
@@ -34,15 +24,15 @@ public class AnswersController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{answId}/requests", method = RequestMethod.GET, produces = "application/hal+json")
-    public List<Requests> getAnswerRequests(@PathVariable Long answId) {
-        Answers a = answersRepository.findByAnswId(answId);
-        List<Requests> requests = a.getRequestsList();
+    public List<Request> getAnswerRequests(@PathVariable Long answId) {
+        Response a = answersRepository.findByAnswId(answId);
+        List<Request> requests = a.getRequestsList();
 
-        for (Requests r: requests) {
+        for (Request r: requests) {
             r.removeLinks();
             r.add(linkTo(RequestsController.class).slash(r.getReqId()).withSelfRel());
         }
 
         return requests;
-    }
+    }*/
 }

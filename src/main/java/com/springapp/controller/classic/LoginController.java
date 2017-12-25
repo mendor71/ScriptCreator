@@ -1,9 +1,14 @@
 package com.springapp.controller.classic;
 
+import com.springapp.appcfg.AppProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
@@ -14,11 +19,27 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class LoginController {
 
+    @Autowired
+    private AppProperties appProperties;
+
     @RequestMapping(value = "/login")
-    public String loginPage(ModelMap modelMap, @RequestParam(value = "error", required = false) boolean error) {
-        if (error) {
-            modelMap.addAttribute("errText", "Логин или пароль указаны некорректно!");
+    public String loginPage() {
+        return "login";
+    }
+
+    @RequestMapping(value = "/login/error", method = RequestMethod.GET)
+    public final String displayLoginform(Model model, @RequestParam(value = "type") String type
+            , @RequestParam(value = "text", required = false) String text
+            , @RequestParam(value = "link", required = false) String link) {
+
+        if (type.equals("badCredentials")) {
+            model.addAttribute("error", "Логин или пароль введены не верно!<br/>");
+        } else if (type.equals("accountDisabled")) {
+            model.addAttribute("error", "Ваша учетная запись отключена! Перейдите по ссылке для восстановления доступа: <a href='" + link + "'>Продлить доступ</a><br/>" );
+        } else {
+            model.addAttribute("error", "Авторизация не удалась, повторите попытку позже...<br/>");
         }
+
         return "login";
     }
 

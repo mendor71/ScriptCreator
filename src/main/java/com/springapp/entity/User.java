@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "public.users")
 public class User extends ResourceSupport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +23,15 @@ public class User extends ResourceSupport {
     private String userMiddleName;
     @Column(name = "user_password")
     private String userPassword;
-    //private List<Category> userCategories;
-    //private List<Role> userRoles;
+    @JoinTable(name = "users_categories_access", joinColumns = {@JoinColumn(name = "uca_user_id")}, inverseJoinColumns = {@JoinColumn(name = "uca_cat_id")})
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<Category> userCategoriesList;
+    @JoinTable(name = "user_roles", joinColumns = {@JoinColumn(name = "ur_user_id")}, inverseJoinColumns = {@JoinColumn(name = "ur_role_id")})
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Role> userRolesList;
+    @JoinColumn(name = "user_state_id", referencedColumnName = "state_id")
+    @ManyToOne(optional = false)
+    private State userStateId;
 
     public User() {
     }
@@ -86,6 +93,30 @@ public class User extends ResourceSupport {
 
     public void setUserLogin(String userLogin) {
         this.userLogin = userLogin;
+    }
+
+    public State getUserStateId() {
+        return userStateId;
+    }
+
+    public void setUserStateId(State userStateId) {
+        this.userStateId = userStateId;
+    }
+
+    public List<Role> getUserRolesList() {
+        return userRolesList;
+    }
+
+    public void setUserRolesList(List<Role> userRolesList) {
+        this.userRolesList = userRolesList;
+    }
+
+    public List<Category> getUserCategoriesList() {
+        return userCategoriesList;
+    }
+
+    public void setUserCategoriesList(List<Category> userCategoriesList) {
+        this.userCategoriesList = userCategoriesList;
     }
 
 //    public List<Category> getUserCategories() {
