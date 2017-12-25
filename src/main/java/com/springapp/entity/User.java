@@ -2,42 +2,56 @@ package com.springapp.entity;
 
 import org.springframework.hateoas.ResourceSupport;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "public.users")
 public class User extends ResourceSupport {
     @Id
-    private Long userId;
-    private String login;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private Integer userId;
+    @Column(name = "user_login")
+    private String userLogin;
+    @Column(name = "user_last_name")
     private String userLastName;
+    @Column(name = "user_first_name")
     private String userFirstName;
+    @Column(name = "user_middle_name")
     private String userMiddleName;
+    @Column(name = "user_password")
     private String userPassword;
-    private List<Category> userCategories;
-    private List<Role> userRoles;
+    @JoinTable(name = "users_categories_access", joinColumns = {@JoinColumn(name = "uca_user_id")}, inverseJoinColumns = {@JoinColumn(name = "uca_cat_id")})
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<Category> userCategoriesList;
+    @JoinTable(name = "user_roles", joinColumns = {@JoinColumn(name = "ur_user_id")}, inverseJoinColumns = {@JoinColumn(name = "ur_role_id")})
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Role> userRolesList;
+    @JoinColumn(name = "user_state_id", referencedColumnName = "state_id")
+    @ManyToOne(optional = false)
+    private State userStateId;
 
     public User() {
     }
 
-    public User(Long userId, String login, String userLastName, String userFirstName, String userMiddleName, String userPassword, ArrayList<Category> categories, ArrayList<Role> userRoles) {
+    public User(Integer userId, String userLogin, String userLastName, String userFirstName, String userMiddleName, String userPassword, ArrayList<Category> categories, ArrayList<Role> userRoles) {
         this.userId = userId;
-        this.login = login;
+        this.userLogin = userLogin;
         this.userLastName = userLastName;
         this.userFirstName = userFirstName;
         this.userMiddleName = userMiddleName;
         this.userPassword = userPassword;
-        this.userCategories = categories;
-        this.userRoles = userRoles;
+        //this.userCategories = categories;
+        //this.userRoles = userRoles;
     }
 
-    public Long getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -73,29 +87,52 @@ public class User extends ResourceSupport {
         this.userPassword = userPassword;
     }
 
-
-    public List<Category> getUserCategories() {
-        return userCategories;
+    public String getUserLogin() {
+        return userLogin;
     }
 
-    public void setUserCategories(List<Category> userCategories) {
-        this.userCategories = userCategories;
+    public void setUserLogin(String userLogin) {
+        this.userLogin = userLogin;
     }
 
-    public String getLogin() {
-        return login;
+    public State getUserStateId() {
+        return userStateId;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setUserStateId(State userStateId) {
+        this.userStateId = userStateId;
     }
 
-
-    public List<Role> getUserRoles() {
-        return userRoles;
+    public List<Role> getUserRolesList() {
+        return userRolesList;
     }
 
-    public void setUserRoles(List<Role> userRoles) {
-        this.userRoles = userRoles;
+    public void setUserRolesList(List<Role> userRolesList) {
+        this.userRolesList = userRolesList;
     }
+
+    public List<Category> getUserCategoriesList() {
+        return userCategoriesList;
+    }
+
+    public void setUserCategoriesList(List<Category> userCategoriesList) {
+        this.userCategoriesList = userCategoriesList;
+    }
+
+//    public List<Category> getUserCategories() {
+//        return userCategories;
+//    }
+//
+//    public void setUserCategories(List<Category> userCategories) {
+//        this.userCategories = userCategories;
+//    }
+
+
+//    public List<Role> getUserRoles() {
+//        return userRoles;
+//    }
+//
+//    public void setUserRoles(List<Role> userRoles) {
+//        this.userRoles = userRoles;
+//    }
 }

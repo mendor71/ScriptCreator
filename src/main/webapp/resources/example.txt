@@ -1,0 +1,1 @@
+curl -H "Content-Type: application/json" -X POST -d {\"userLogin\":\"0\",\"userPassword\":\"123\"} http://localhost:8080/ScriptCreator/users/

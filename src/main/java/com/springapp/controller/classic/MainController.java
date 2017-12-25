@@ -16,4 +16,9 @@ public class MainController {
     public String printWelcome(ModelMap modelMap) {
         return "index";
     }
+
+    @RequestMapping(value = "testUsers", method = RequestMethod.GET)
+    public String testUsers(ModelMap modelMap) {
+        return "test";
+    }
 }

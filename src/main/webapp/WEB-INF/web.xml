@@ -4,6 +4,7 @@
             http://java.sun.com/xml/ns/javaee/web-app_3_1.xsd">
 
     <display-name>Script-Build-Application</display-name>
+
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
