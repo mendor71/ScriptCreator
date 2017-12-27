@@ -8,6 +8,7 @@ import com.springapp.util.JSONResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,8 +23,9 @@ public class UserRolesController {
     @Autowired
     private RoleRepository roleRepository;
 
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ResponseEntity add(@RequestParam(value = "userId") Integer userId, @RequestParam(value = "roleId") Integer roleId) {
+    public ResponseEntity addRole(@RequestParam(value = "userId") Integer userId, @RequestParam(value = "roleId") Integer roleId) {
 
         User user = userRepository.findOne(userId);
         Role role = roleRepository.findOne(roleId);
@@ -45,8 +47,9 @@ public class UserRolesController {
         return new ResponseEntity(new JSONResponse(JSONResponse.STATE.OK, "role: " + role.getRoleName() + " added to user " + user.getUserLogin()), HttpStatus.OK);
     }
 
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/", method = RequestMethod.DELETE)
-    public ResponseEntity remove(@RequestParam(value = "userId") Integer userId, @RequestParam(value = "roleId") Integer roleId) {
+    public ResponseEntity removeRole(@RequestParam(value = "userId") Integer userId, @RequestParam(value = "roleId") Integer roleId) {
 
         User user = userRepository.findOne(userId);
         Role role = roleRepository.findOne(roleId);

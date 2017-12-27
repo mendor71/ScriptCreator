@@ -10,6 +10,8 @@ public class AppProperties {
     private String userDisabledState;
     private String accessEnableLink;
     private String defaultState;
+    private String defaultDeletedState;
+    private String defaultCategory;
 
     public void setUserDefaultRole(String userDefaultRole) {
         this.userDefaultRole = userDefaultRole;
@@ -49,5 +51,21 @@ public class AppProperties {
 
     public String getDefaultState() {
         return defaultState;
+    }
+
+    public void setDefaultDeletedState(String defaultDeletedState) {
+        this.defaultDeletedState = defaultDeletedState;
+    }
+
+    public String getDefaultDeletedState() {
+        return defaultDeletedState;
+    }
+
+    public void setDefaultCategory(String defaultCategory) {
+        this.defaultCategory = defaultCategory;
+    }
+
+    public String getDefaultCategory() {
+        return defaultCategory;
     }
 }

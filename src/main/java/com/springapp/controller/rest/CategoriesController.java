@@ -5,7 +5,11 @@ import com.springapp.entity.Category;
 import com.springapp.entity.State;
 import com.springapp.repository.CategoryRepository;
 import com.springapp.repository.StateRepository;
+import com.springapp.util.JSONResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
@@ -21,6 +25,7 @@ public class CategoriesController {
     @Autowired
     private StateRepository stateRepository;
 
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/{catId}", method = RequestMethod.GET)
     public Category getCategoryById(@PathVariable Integer catId) {
         Category category = categoryRepository.findOne(catId);
@@ -31,6 +36,7 @@ public class CategoriesController {
         return category;
     }
 
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public Category createNew(@RequestBody Category category) {
         if (category.getCatStateId() == null) {
@@ -40,9 +46,27 @@ public class CategoriesController {
         return categoryRepository.save(category);
     }
 
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     public Category update(@RequestBody Category category) {
         return categoryRepository.save(category);
     }
 
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/", method = RequestMethod.DELETE)
+    public ResponseEntity delete(@RequestParam(value = "catId") Integer catId) {
+        State state = stateRepository.findByStateName(appProperties.getDefaultDeletedState());
+
+        Category category = categoryRepository.findOne(catId);
+
+        if (category == null) {
+            return new ResponseEntity(new JSONResponse(JSONResponse.STATE.NOT_ACCEPTABLE_DATA, "Category not found by ID: " + catId), HttpStatus.NOT_ACCEPTABLE);
+
+        }
+
+        category.setCatStateId(state);
+        categoryRepository.save(category);
+
+        return new ResponseEntity(new JSONResponse(JSONResponse.STATE.OK, "Category mark as deleted: " + catId), HttpStatus.OK);
+    }
 }

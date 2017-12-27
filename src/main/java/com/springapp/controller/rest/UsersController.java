@@ -8,15 +8,13 @@ import com.springapp.entity.User;
 import com.springapp.repository.RoleRepository;
 import com.springapp.repository.StateRepository;
 import com.springapp.repository.UserRepository;
+import com.springapp.util.JSONResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import javax.jws.soap.SOAPBinding;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -94,4 +92,19 @@ public class UsersController {
         return userRepository.save(user);
     }
 
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/", method = RequestMethod.DELETE)
+    public ResponseEntity deleteUser(@RequestParam(value = "userId") Integer userId) {
+        User user = userRepository.findOne(userId);
+
+        if (user == null) {
+            return new ResponseEntity(new JSONResponse(JSONResponse.STATE.NOT_ACCEPTABLE_DATA, "User not found by ID: " + userId), HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        State state = stateRepository.findByStateName(appProperties.getDefaultDeletedState());
+        user.setUserStateId(state);
+        userRepository.save(user);
+
+        return new ResponseEntity(new JSONResponse(JSONResponse.STATE.OK, "User mark as deleted: " + user.getUserLogin()), HttpStatus.OK);
+    }
 }
