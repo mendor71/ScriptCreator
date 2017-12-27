@@ -3,6 +3,7 @@ package com.springapp.entity;
 import org.springframework.hateoas.ResourceSupport;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,11 +19,11 @@ public class Category extends ResourceSupport {
     @ManyToOne
     private State catStateId;
     @ManyToMany(mappedBy = "userCategoriesList")
-    private List<User> categoryUsersList;
+    private List<User> categoryUsersList = new ArrayList<User>();
     @OneToMany(mappedBy = "respCategory")
-    private List<Response> responseList;
+    private List<Response> responseList = new ArrayList<Response>();
     @OneToMany(mappedBy = "reqCategory")
-    private List<Request> requests;
+    private List<Request> requests = new ArrayList<Request>();
 
     public Category() {
     }

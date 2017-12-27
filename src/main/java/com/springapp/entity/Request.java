@@ -3,6 +3,7 @@ package com.springapp.entity;
 import org.springframework.hateoas.ResourceSupport;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,10 +25,10 @@ public class Request extends ResourceSupport {
     private State reqState;
     @JoinTable(name = "requests_to_responses", joinColumns = {@JoinColumn(name = "req_to_resp_request_id")}, inverseJoinColumns = {@JoinColumn(name = "req_to_resp_response_id")})
     @ManyToMany
-    private List<Response> childResponseList;
+    private List<Response> childResponseList = new ArrayList<Response>();
     @JoinTable(name = "responses_to_requests", joinColumns = {@JoinColumn(name = "resp_to_req_request_id")}, inverseJoinColumns = {@JoinColumn(name = "resp_to_req_response_id")})
     @ManyToMany
-    private List<Response> parentResponseList;
+    private List<Response> parentResponseList = new ArrayList<Response>();
 
     public Request() {
     }

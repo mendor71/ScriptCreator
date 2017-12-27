@@ -88,4 +88,10 @@ public class UsersController {
         return user;
     }
 
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/", method = RequestMethod.PUT)
+    public User updateUser(@RequestBody User user) {
+        return userRepository.save(user);
+    }
+
 }

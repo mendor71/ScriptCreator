@@ -12,23 +12,23 @@ public class Role extends ResourceSupport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
-    private Long roleId;
+    private Integer roleId;
     @Column(name = "role_name")
     private String roleName;
 
     public Role() {
     }
 
-    public Role(Long roleId, String roleName) {
+    public Role(Integer roleId, String roleName) {
         this.roleId = roleId;
         this.roleName = roleName;
     }
 
-    public Long getRoleId() {
+    public Integer getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Long roleId) {
+    public void setRoleId(Integer roleId) {
         this.roleId = roleId;
     }
 
@@ -38,5 +38,15 @@ public class Role extends ResourceSupport {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass().equals(this.getClass())) {
+            Role thatRole = (Role) obj;
+            return this.getRoleId().equals(thatRole.roleId);
+        } else {
+            return false;
+        }
     }
 }

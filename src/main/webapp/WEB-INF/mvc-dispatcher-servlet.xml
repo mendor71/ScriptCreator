@@ -65,6 +65,7 @@
         <property name="userDefaultState" value="Active"/>
         <property name="userDisabledState" value="Disabled"/>
         <property name="accessEnableLink" value="http://google.com"/>
+        <property name="defaultState" value="Active"/>
     </bean>
 
     <tx:annotation-driven/>

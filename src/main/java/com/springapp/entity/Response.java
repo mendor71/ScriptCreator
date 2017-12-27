@@ -3,6 +3,7 @@ package com.springapp.entity;
 import org.springframework.hateoas.ResourceSupport;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,9 +25,9 @@ public class Response extends ResourceSupport {
     @ManyToOne
     private State respState;
     @ManyToMany(mappedBy = "childResponseList")
-    private List<Request> parentRequestList;
+    private List<Request> parentRequestList = new ArrayList<Request>();
     @ManyToMany(mappedBy = "parentResponseList")
-    private List<Request> childRequestList;
+    private List<Request> childRequestList = new ArrayList<Request>();
 
     public Response() {
     }

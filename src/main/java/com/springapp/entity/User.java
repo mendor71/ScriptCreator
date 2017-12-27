@@ -25,10 +25,10 @@ public class User extends ResourceSupport {
     private String userPassword;
     @JoinTable(name = "users_categories_access", joinColumns = {@JoinColumn(name = "uca_user_id")}, inverseJoinColumns = {@JoinColumn(name = "uca_cat_id")})
     @ManyToMany(fetch = FetchType.LAZY)
-    private List<Category> userCategoriesList;
+    private List<Category> userCategoriesList = new ArrayList<Category>();
     @JoinTable(name = "user_roles", joinColumns = {@JoinColumn(name = "ur_user_id")}, inverseJoinColumns = {@JoinColumn(name = "ur_role_id")})
     @ManyToMany(fetch = FetchType.EAGER)
-    private List<Role> userRolesList;
+    private List<Role> userRolesList = new ArrayList<Role>();
     @JoinColumn(name = "user_state_id", referencedColumnName = "state_id")
     @ManyToOne(optional = false)
     private State userStateId;

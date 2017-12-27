@@ -9,6 +9,7 @@ public class AppProperties {
     private String userDefaultState;
     private String userDisabledState;
     private String accessEnableLink;
+    private String defaultState;
 
     public void setUserDefaultRole(String userDefaultRole) {
         this.userDefaultRole = userDefaultRole;
@@ -40,5 +41,13 @@ public class AppProperties {
 
     public String getAccessEnableLink() {
         return accessEnableLink;
+    }
+
+    public void setDefaultState(String defaultState) {
+        this.defaultState = defaultState;
+    }
+
+    public String getDefaultState() {
+        return defaultState;
     }
 }
