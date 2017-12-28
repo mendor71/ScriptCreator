@@ -12,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 
 @RestController
@@ -26,6 +29,17 @@ public class CategoriesController {
     private StateRepository stateRepository;
 
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public List<Category> findAll() {
+        Iterable<Category> categories = categoryRepository.findAll();
+        List<Category> categoryList = new ArrayList<Category>();
+        for (Category c: categories) {
+            categoryList.add(c);
+        }
+        return categoryList;
+    }
+
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/{catId}", method = RequestMethod.GET)
     public Category getCategoryById(@PathVariable Integer catId) {
         Category category = categoryRepository.findOne(catId);
@@ -38,30 +52,31 @@ public class CategoriesController {
 
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public Category createNew(@RequestBody Category category) {
+    public Category createCategory(@RequestBody Category category) {
         if (category.getCatStateId() == null) {
             State state = stateRepository.findByStateName(appProperties.getDefaultState());
             category.setCatStateId(state);
         }
-        return categoryRepository.save(category);
+
+        category = categoryRepository.save(category);
+        return category;
     }
 
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/", method = RequestMethod.PUT)
-    public Category update(@RequestBody Category category) {
+    public Category updateCategory(@RequestBody Category category) {
         return categoryRepository.save(category);
     }
 
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/", method = RequestMethod.DELETE)
-    public ResponseEntity delete(@RequestParam(value = "catId") Integer catId) {
+    public ResponseEntity deleteCategory(@RequestParam(value = "catId") Integer catId) {
         State state = stateRepository.findByStateName(appProperties.getDefaultDeletedState());
 
         Category category = categoryRepository.findOne(catId);
 
         if (category == null) {
             return new ResponseEntity(new JSONResponse(JSONResponse.STATE.NOT_ACCEPTABLE_DATA, "Category not found by ID: " + catId), HttpStatus.NOT_ACCEPTABLE);
-
         }
 
         category.setCatStateId(state);

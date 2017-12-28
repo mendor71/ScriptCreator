@@ -11,10 +11,7 @@ import com.springapp.util.JSONResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 
 @RestController
 @RequestMapping(value = "/requests")
@@ -38,7 +35,7 @@ public class RequestsController {
 
     //@PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public Request creteRequest(@RequestBody Request request) {
+    public Request createRequest(@RequestBody Request request) {
         if (request.getReqCategory() == null) {
             Category category = categoryRepository.findByCatName(appProperties.getDefaultCategory());
             request.setReqCategory(category);
@@ -60,7 +57,7 @@ public class RequestsController {
 
     //@PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/", method = RequestMethod.DELETE)
-    public ResponseEntity updateRequest(@RequestParam(value = "reqId") Integer reqId) {
+    public ResponseEntity deleteRequest(@RequestParam(value = "reqId") Integer reqId) {
         Request request = requestsRepository.findOne(reqId);
 
         if (request == null) {

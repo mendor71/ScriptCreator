@@ -1,5 +1,6 @@
 package com.springapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.hateoas.ResourceSupport;
 
 import javax.persistence.*;
@@ -26,6 +27,8 @@ public class Request extends ResourceSupport {
     @JoinTable(name = "requests_to_responses", joinColumns = {@JoinColumn(name = "req_to_resp_request_id")}, inverseJoinColumns = {@JoinColumn(name = "req_to_resp_response_id")})
     @ManyToMany
     private List<Response> childResponseList = new ArrayList<Response>();
+
+    @JsonIgnore
     @JoinTable(name = "responses_to_requests", joinColumns = {@JoinColumn(name = "resp_to_req_request_id")}, inverseJoinColumns = {@JoinColumn(name = "resp_to_req_response_id")})
     @ManyToMany
     private List<Response> parentResponseList = new ArrayList<Response>();
@@ -94,5 +97,16 @@ public class Request extends ResourceSupport {
 
     public void setReqPrior(Integer reqPrior) {
         this.reqPrior = reqPrior;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Request request = (Request) o;
+
+        return reqId.equals(request.reqId);
     }
 }

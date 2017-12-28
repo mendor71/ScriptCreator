@@ -1,5 +1,6 @@
 package com.springapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.hateoas.ResourceSupport;
 
 import javax.persistence.*;
@@ -24,6 +25,7 @@ public class Response extends ResourceSupport {
     @JoinColumn(name = "resp_state_id", referencedColumnName = "state_id")
     @ManyToOne
     private State respState;
+    @JsonIgnore
     @ManyToMany(mappedBy = "childResponseList")
     private List<Request> parentRequestList = new ArrayList<Request>();
     @ManyToMany(mappedBy = "parentResponseList")
@@ -86,5 +88,16 @@ public class Response extends ResourceSupport {
 
     public void setChildRequestList(List<Request> childRequestList) {
         this.childRequestList = childRequestList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Response response = (Response) o;
+
+        return respId != null ? respId.equals(response.respId) : response.respId == null;
     }
 }
