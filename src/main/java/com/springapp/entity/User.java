@@ -119,7 +119,22 @@ public class User extends ResourceSupport {
         this.userCategoriesList = userCategoriesList;
     }
 
-//    public List<Category> getUserCategories() {
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", userLogin='" + userLogin + '\'' +
+                ", userLastName='" + userLastName + '\'' +
+                ", userFirstName='" + userFirstName + '\'' +
+                ", userMiddleName='" + userMiddleName + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                ", userCategoriesList=" + userCategoriesList +
+                ", userRolesList=" + userRolesList +
+                ", userStateId=" + userStateId +
+                '}';
+    }
+
+    //    public List<Category> getUserCategories() {
 //        return userCategories;
 //    }
 //

@@ -17,6 +17,16 @@ public class MainController {
         return "index";
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/menu/categories")
+    public String categoriesPage(ModelMap modelMap) {
+        return "categories";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/menu/request_response")
+    public String requestResponsePage(ModelMap modelMap) {
+        return "request_response";
+    }
+
     @RequestMapping(value = "testUsers", method = RequestMethod.GET)
     public String testUsers(ModelMap modelMap) {
         return "test";

@@ -3,24 +3,56 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
 <head>
-
-  <script src="${pageContext.request.contextPath}/resources/jquery-3.2.1.min.js" type="text/javascript"></script>
-
-  <title>Index Page</title>
+  <link href="${pageContext.request.contextPath}/resources/webix/codebase/webix.css" rel="stylesheet"/>
+  <script src="${pageContext.request.contextPath}/resources/webix/codebase/webix.js" type="text/javascript"></script>
+  <script src="${pageContext.request.contextPath}/resources/webix/codebase/i18n/ru.js" type="text/javascript"></script>
+  <script src="${pageContext.request.contextPath}/resources/js/jquery-3.2.1.min.js" type="text/javascript"></script>
+  <title>Welcome to MoneyHelper!</title>
 </head>
 <body>
-<div class="container">
-  <h1>Script Creator Service</h1>
+<div class="container" id="page_content" style="width: 100%; height: 100%;">
   <sec:authorize access="!isAuthenticated()">
-    <p><a class="btn btn-lg btn-success" href="<c:redirect url="/login"/>">ВОЙТИ</a></p>
+    <c:redirect url="/login"/>">
   </sec:authorize>
-  <sec:authorize access="isAuthenticated()">
-    <sec:authorize access="hasAnyRole('ADMIN', 'USER')">
-      <p>Добро пожаловать: <sec:authentication property="principal"/>!</p>
-      <div class="ur button"><a href="<c:url value="/users/"/>">Просмотр пользователей</a></div>
-      <p><a class="btn btn-lg btn-danger" href="<c:url value="/logout"/>">ВЫЙТИ</a></p>
-    </sec:authorize>
-  </sec:authorize>
+  <div id="profile_container"></div>
 </div>
 </body>
 </html>
+<style>
+
+</style>
+<script>
+    webix.ui({
+        id: "index_page"
+        , container: "page_content"
+        , rows: [
+            {type: "toolbar", cols:[
+                {}
+                ,{view: "label", label: "NoName, Вас приветствует сервис TypeNameHere!", align: "center"}
+                ,{}
+            ]}
+            ,{height: 25}
+            ,{
+                cols: [
+                    {}
+                    ,{rows: [
+                        {view: "button", value: "Работать, НЕГРЫ!"}
+                        ,{view: "button", value: "Работа с категориями", click: function () {
+                            webix.send("${pageContext.request.contextPath}/menu/categories", null, "GET");
+                        }}
+                        ,{view: "button", value: "Создание Сценариев", click: function () {
+                            webix.send("${pageContext.request.contextPath}/menu/request_response", null, "GET");
+                        }}
+                        ,{view: "button", value: "Администрирование пользлователей", click: function () {
+                            webix.send("${pageContext.request.contextPath}/menu/user_admin", null, "GET");
+                        }}
+                    ]}
+                    ,{}
+                ]
+            }
+        ]
+    });
+
+    webix.i18n.setLocale("ru-RU");
+    webix.Date.startOnMonday=true;
+</script>

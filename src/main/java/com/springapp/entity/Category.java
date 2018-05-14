@@ -21,11 +21,9 @@ public class Category extends ResourceSupport {
     private State catStateId;
     @ManyToMany(mappedBy = "userCategoriesList")
     private List<User> categoryUsersList = new ArrayList<User>();
-
     @JsonIgnore
     @OneToMany(mappedBy = "respCategory")
     private List<Response> responseList = new ArrayList<Response>();
-
     @JsonIgnore
     @OneToMany(mappedBy = "reqCategory")
     private List<Request> requests = new ArrayList<Request>();
