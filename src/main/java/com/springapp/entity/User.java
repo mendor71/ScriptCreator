@@ -12,23 +12,31 @@ public class User extends ResourceSupport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Integer userId;
+    private Long userId;
+
     @Column(name = "user_login")
     private String userLogin;
+
     @Column(name = "user_last_name")
     private String userLastName;
+
     @Column(name = "user_first_name")
     private String userFirstName;
+
     @Column(name = "user_middle_name")
     private String userMiddleName;
+
     @Column(name = "user_password")
     private String userPassword;
+
     @JoinTable(name = "users_categories_access", joinColumns = {@JoinColumn(name = "uca_user_id")}, inverseJoinColumns = {@JoinColumn(name = "uca_cat_id")})
     @ManyToMany(fetch = FetchType.LAZY)
     private List<Category> userCategoriesList = new ArrayList<Category>();
+
     @JoinTable(name = "user_roles", joinColumns = {@JoinColumn(name = "ur_user_id")}, inverseJoinColumns = {@JoinColumn(name = "ur_role_id")})
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> userRolesList = new ArrayList<Role>();
+
     @JoinColumn(name = "user_state_id", referencedColumnName = "state_id")
     @ManyToOne(optional = false)
     private State userStateId;
@@ -36,7 +44,7 @@ public class User extends ResourceSupport {
     public User() {
     }
 
-    public User(Integer userId, String userLogin, String userLastName, String userFirstName, String userMiddleName, String userPassword, ArrayList<Category> categories, ArrayList<Role> userRoles) {
+    public User(Long userId, String userLogin, String userLastName, String userFirstName, String userMiddleName, String userPassword, ArrayList<Category> categories, ArrayList<Role> userRoles) {
         this.userId = userId;
         this.userLogin = userLogin;
         this.userLastName = userLastName;
@@ -47,11 +55,11 @@ public class User extends ResourceSupport {
         //this.userRoles = userRoles;
     }
 
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

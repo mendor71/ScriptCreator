@@ -9,7 +9,7 @@
 <html>
 <head>
   <title>Title</title>
-  <script src="${pageContext.request.contextPath}/js/jquery-3.2.1.min.js" type="text/javascript"></script>
+  <script src="${pageContext.request.contextPath}/resources/js/jquery-3.2.1.min.js" type="text/javascript"></script>
 </head>
 <body>
 <p><input type="button" value="Create USER" id="user_create"/></p>

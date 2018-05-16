@@ -6,6 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 /**
  * Created by Mendor on 25.12.2017.
  */
-public interface StateRepository extends CrudRepository<State, Integer> {
+public interface StateRepository extends CrudRepository<State, Long> {
     State findByStateName(String stateName);
 }

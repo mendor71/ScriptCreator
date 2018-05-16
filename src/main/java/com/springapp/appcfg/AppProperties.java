@@ -12,6 +12,7 @@ public class AppProperties {
     private String defaultState;
     private String defaultDeletedState;
     private String defaultCategory;
+    private Integer defaultScenarioStateId;
 
     public void setUserDefaultRole(String userDefaultRole) {
         this.userDefaultRole = userDefaultRole;
@@ -67,5 +68,13 @@ public class AppProperties {
 
     public String getDefaultCategory() {
         return defaultCategory;
+    }
+
+    public Integer getDefaultScenarioStateId() {
+        return defaultScenarioStateId;
+    }
+
+    public void setDefaultScenarioStateId(Integer defaultScenarioStateId) {
+        this.defaultScenarioStateId = defaultScenarioStateId;
     }
 }

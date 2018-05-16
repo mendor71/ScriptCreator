@@ -1,74 +1,52 @@
 package com.springapp.controller.rest;
 
-import com.springapp.appcfg.AppProperties;
-import com.springapp.entity.Category;
+
 import com.springapp.entity.Request;
-import com.springapp.entity.State;
-import com.springapp.repository.CategoryRepository;
-import com.springapp.repository.RequestRepository;
-import com.springapp.repository.StateRepository;
-import com.springapp.util.JSONResponse;
+import com.springapp.entity.Response;
+import com.springapp.services.dao.RequestsService;
+import com.springapp.services.dao.RequestsRelationsService;
+import org.json.simple.JSONAware;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static com.springapp.util.JSONResponse.*;
 
 @RestController
 @RequestMapping(value = "/requests")
 public class RequestsController {
+    @Autowired private RequestsService requestsService;
+    @Autowired private RequestsRelationsService requestsRelationsService;
 
-    @Autowired
-    private AppProperties appProperties;
-
-    @Autowired
-    private RequestRepository requestsRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
-    private StateRepository stateRepository;
-
-    //@PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{reqId}", method = RequestMethod.GET)
-    public Request findRequestById(@PathVariable Integer reqId) {
-        return requestsRepository.findOne(reqId);
+    public Request findRequestById(@PathVariable Long reqId) {
+        return requestsService.findRequestById(reqId);
     }
 
-    //@PreAuthorize("hasRole('ROLE_USER')")
-    @RequestMapping(value = "/", method = RequestMethod.POST)
-    public Request createRequest(@RequestBody Request request) {
-        if (request.getReqCategory() == null) {
-            Category category = categoryRepository.findByCatName(appProperties.getDefaultCategory());
-            request.setReqCategory(category);
-        }
-
-        if (request.getReqState() == null) {
-            State state = stateRepository.findByStateName(appProperties.getDefaultState());
-            request.setReqState(state);
-        }
-
-        return requestsRepository.save(request);
+    @RequestMapping(method = RequestMethod.POST)
+    public JSONAware createRequest(@RequestBody Request request) {
+        requestsService.createRequest(request);
+        return createOKResponse("Вопрос успешно создан");
     }
 
-    //@PreAuthorize("hasRole('ROLE_USER')")
-    @RequestMapping(value = "/", method = RequestMethod.PUT)
-    public Request updateRequest(@RequestBody Request request) {
-        return requestsRepository.save(request);
+    @RequestMapping(value = "/{reqId}/child_response", method = RequestMethod.POST)
+    public JSONAware addChildResponse(@PathVariable Long reqId, @RequestBody Response response) {
+        return requestsRelationsService.addChildResponse(reqId, response);
     }
 
-    //@PreAuthorize("hasRole('ROLE_USER')")
-    @RequestMapping(value = "/", method = RequestMethod.DELETE)
-    public ResponseEntity deleteRequest(@RequestParam(value = "reqId") Integer reqId) {
-        Request request = requestsRepository.findOne(reqId);
+    @RequestMapping(method = RequestMethod.PUT)
+    public JSONAware updateRequest(@RequestBody Request request) {
+        requestsService.updateRequest(request);
+        return createOKResponse("Вопрос успешно обновлен");
+    }
 
-        if (request == null) {
-            return new ResponseEntity(new JSONResponse(JSONResponse.STATE.NOT_ACCEPTABLE_DATA, "Request not found by ID: " + reqId), HttpStatus.NOT_ACCEPTABLE);
-        }
+    @RequestMapping(value = "/{reqId}", method = RequestMethod.DELETE)
+    public JSONAware deleteRequest(@PathVariable Long reqId) {
+        return requestsService.deleteRequest(reqId);
+    }
 
-        State state = stateRepository.findByStateName(appProperties.getDefaultDeletedState());
-        request.setReqState(state);
-        requestsRepository.save(request);
-
-        return new ResponseEntity(new JSONResponse(JSONResponse.STATE.OK, "Request mark as deleted: " + reqId), HttpStatus.OK);
+    @RequestMapping(value = "/{reqId}/child_response/{respId}", method = RequestMethod.DELETE)
+    public JSONAware removeChildResponse(@PathVariable Long reqId, @PathVariable Long respId) {
+        return  requestsRelationsService.removeChildResponse(reqId, respId);
     }
 
 }

@@ -11,26 +11,28 @@ public class State extends ResourceSupport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "state_id")
-    private Integer stateId;
+    private Long stateId;
+
     @Column(name = "state_name")
     private String stateName;
+
     @Column(name = "state_localized_name")
     private String stateLocalizedName;
 
     public State() {
     }
 
-    public State(Integer stateId, String stateName, String stateNameLocale) {
+    public State(Long stateId, String stateName, String stateNameLocale) {
         this.stateId = stateId;
         this.stateName = stateName;
         this.stateLocalizedName = stateNameLocale;
     }
 
-    public Integer getStateId() {
+    public Long getStateId() {
         return stateId;
     }
 
-    public void setStateId(Integer stateId) {
+    public void setStateId(Long stateId) {
         this.stateId = stateId;
     }
 

@@ -13,35 +13,32 @@ public class Category extends ResourceSupport {
     @Id
     @Column(name = "cat_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer catId;
+    private Long catId;
+
     @Column(name = "cat_name")
     private String catName;
+
     @JoinColumn(name = "cat_state_id", referencedColumnName = "state_id")
     @ManyToOne
     private State catStateId;
+
     @ManyToMany(mappedBy = "userCategoriesList")
     private List<User> categoryUsersList = new ArrayList<User>();
-    @JsonIgnore
-    @OneToMany(mappedBy = "respCategory")
-    private List<Response> responseList = new ArrayList<Response>();
-    @JsonIgnore
-    @OneToMany(mappedBy = "reqCategory")
-    private List<Request> requests = new ArrayList<Request>();
 
     public Category() {
     }
 
-    public Category(Integer catId, String catName, State catStateId) {
+    public Category(Long catId, String catName, State catStateId) {
         this.catId = catId;
         this.catName = catName;
         this.catStateId = catStateId;
     }
 
-    public Integer getCatId() {
+    public Long getCatId() {
         return catId;
     }
 
-    public void setCatId(Integer catId) {
+    public void setCatId(Long catId) {
         this.catId = catId;
     }
 
@@ -69,19 +66,14 @@ public class Category extends ResourceSupport {
         this.categoryUsersList = categoryUsersList;
     }
 
-    public List<Response> getResponseList() {
-        return responseList;
-    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
-    public void setResponseList(List<Response> responseList) {
-        this.responseList = responseList;
-    }
+        Category category = (Category) o;
 
-    public List<Request> getRequests() {
-        return requests;
-    }
-
-    public void setRequests(List<Request> requests) {
-        this.requests = requests;
+        return catId != null ? catId.equals(category.catId) : category.catId == null;
     }
 }

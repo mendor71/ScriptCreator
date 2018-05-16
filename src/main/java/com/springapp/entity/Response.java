@@ -14,31 +14,37 @@ public class Response extends ResourceSupport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "resp_id")
-    private Integer respId;
+    private Long respId;
+
     @Column(name = "resp_text")
     private String respText;
+
     @Column(name = "resp_prior")
     private Integer respPrior;
-    @JoinColumn(name = "resp_cat_id", referencedColumnName = "cat_id")
+
+    @JoinColumn(name = "resp_sc_id", referencedColumnName = "sc_id")
     @ManyToOne
-    private Category respCategory;
+    private Scenario respScenario;
+
     @JoinColumn(name = "resp_state_id", referencedColumnName = "state_id")
     @ManyToOne
     private State respState;
+
     @JsonIgnore
     @ManyToMany(mappedBy = "childResponseList")
     private List<Request> parentRequestList = new ArrayList<Request>();
+
     @ManyToMany(mappedBy = "parentResponseList")
     private List<Request> childRequestList = new ArrayList<Request>();
 
     public Response() {
     }
 
-    public Integer getRespId() {
+    public Long getRespId() {
         return respId;
     }
 
-    public void setRespId(Integer respId) {
+    public void setRespId(Long respId) {
         this.respId = respId;
     }
 
@@ -56,14 +62,6 @@ public class Response extends ResourceSupport {
 
     public void setRespPrior(Integer respPrior) {
         this.respPrior = respPrior;
-    }
-
-    public Category getRespCategory() {
-        return respCategory;
-    }
-
-    public void setRespCategory(Category respCategory) {
-        this.respCategory = respCategory;
     }
 
     public State getRespState() {
@@ -90,6 +88,14 @@ public class Response extends ResourceSupport {
         this.childRequestList = childRequestList;
     }
 
+    public Scenario getRespScenario() {
+        return respScenario;
+    }
+
+    public void setRespScenario(Scenario respScenario) {
+        this.respScenario = respScenario;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -100,4 +106,5 @@ public class Response extends ResourceSupport {
 
         return respId != null ? respId.equals(response.respId) : response.respId == null;
     }
+
 }

@@ -3,30 +3,42 @@ package com.springapp.util;
 import org.json.simple.JSONObject;
 import org.springframework.hateoas.ResourceSupport;
 
-public class JSONResponse extends ResourceSupport {
-    public enum STATE {OK, ERROR, NOT_FOUND, NOT_ACCEPTABLE_DATA}
+import org.json.simple.JSONObject;
 
-    private String state;
-    private String message;
+public class JSONResponse {
 
-    public JSONResponse(STATE state, String message) {
-        this.state = state.toString();
-        this.message = message;
+    public static JSONObject createOKResponse(String message) {
+        JSONObject object = new JSONObject();
+        object.put("state", "OK");
+        object.put("message", message);
+        return object;
     }
 
-    public String getState() {
-        return state;
+    public static JSONObject createERRResponse(String message) {
+        JSONObject object = new JSONObject();
+        object.put("state", "ERR");
+        object.put("message", message);
+        return object;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public static JSONObject createNotFoundResponse(String message) {
+        JSONObject object = new JSONObject();
+        object.put("state", "NOT_FOUND");
+        object.put("message", message);
+        return object;
     }
 
-    public String getMessage() {
-        return message;
+    public static JSONObject createNotUniqueResponse(String message) {
+        JSONObject object = new JSONObject();
+        object.put("state", "NOT_UNIQUE_DATA");
+        object.put("message", message);
+        return object;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public static JSONObject createAccessDeniedResponse(String message) {
+        JSONObject object = new JSONObject();
+        object.put("state", "ACCESS_DENIED");
+        object.put("message", message);
+        return object;
     }
 }

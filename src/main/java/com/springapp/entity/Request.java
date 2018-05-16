@@ -13,17 +13,22 @@ public class Request extends ResourceSupport {
     @Id
     @Column(name = "req_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer reqId;
+    private Long reqId;
+
     @Column(name = "req_text")
     private String reqText;
+
     @Column(name = "req_prior")
     private Integer reqPrior;
-    @JoinColumn(name = "req_cat_id", referencedColumnName = "cat_id")
+
+    @JoinColumn(name = "req_sc_id", referencedColumnName = "sc_id")
     @ManyToOne
-    private Category reqCategory;
+    private Scenario reqScenario;
+
     @JoinColumn(name = "req_state_id", referencedColumnName = "state_id")
     @ManyToOne
     private State reqState;
+
     @JoinTable(name = "requests_to_responses", joinColumns = {@JoinColumn(name = "req_to_resp_request_id")}, inverseJoinColumns = {@JoinColumn(name = "req_to_resp_response_id")})
     @ManyToMany
     private List<Response> childResponseList = new ArrayList<Response>();
@@ -36,18 +41,17 @@ public class Request extends ResourceSupport {
     public Request() {
     }
 
-    public Request(Integer reqId, String reqText, Category reqCategory, State reqState) {
+    public Request(Long reqId, String reqText, State reqState) {
         this.reqId = reqId;
         this.reqText = reqText;
-        this.reqCategory = reqCategory;
         this.reqState = reqState;
     }
 
-    public Integer getReqId() {
+    public Long getReqId() {
         return reqId;
     }
 
-    public void setReqId(Integer reqId) {
+    public void setReqId(Long reqId) {
         this.reqId = reqId;
     }
 
@@ -57,14 +61,6 @@ public class Request extends ResourceSupport {
 
     public void setReqText(String reqText) {
         this.reqText = reqText;
-    }
-
-    public Category getReqCategory() {
-        return reqCategory;
-    }
-
-    public void setReqCategory(Category reqCategory) {
-        this.reqCategory = reqCategory;
     }
 
     public State getReqState() {
@@ -99,6 +95,15 @@ public class Request extends ResourceSupport {
         this.reqPrior = reqPrior;
     }
 
+
+    public Scenario getReqScenario() {
+        return reqScenario;
+    }
+
+    public void setReqScenario(Scenario reqScenario) {
+        this.reqScenario = reqScenario;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -109,4 +114,5 @@ public class Request extends ResourceSupport {
 
         return reqId.equals(request.reqId);
     }
+
 }

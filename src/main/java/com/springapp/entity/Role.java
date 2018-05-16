@@ -12,23 +12,24 @@ public class Role extends ResourceSupport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
-    private Integer roleId;
+    private Long roleId;
+
     @Column(name = "role_name")
     private String roleName;
 
     public Role() {
     }
 
-    public Role(Integer roleId, String roleName) {
+    public Role(Long roleId, String roleName) {
         this.roleId = roleId;
         this.roleName = roleName;
     }
 
-    public Integer getRoleId() {
+    public Long getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Integer roleId) {
+    public void setRoleId(Long roleId) {
         this.roleId = roleId;
     }
 

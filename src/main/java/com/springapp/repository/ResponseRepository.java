@@ -6,5 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 /**
  * Created by Mendor on 25.12.2017.
  */
-public interface ResponseRepository extends CrudRepository<Response, Integer> {
+public interface ResponseRepository extends CrudRepository<Response, Long> {
 }

@@ -28,15 +28,28 @@
         , rows: [
             {type: "toolbar", cols:[
                 {}
-                ,{view: "label", label: "Раздел работы с категориями", align: "center"}
+                ,{view: "label", label: "Раздел работы с категориями", width: 450, align: "center"}
                 ,{}
             ]}
             ,{height: 25}
             ,{
                 cols: [
-                    {width: 15}
+                    {width: 50}
                     , {view: "combo", id: "categoriesCombo", label: "Категории", options:[]}
-                    , {width: 15}
+                    , {}
+                    , {view: "button", width: 200, value: "Добавить", click: function () {
+                        $$("cat_id").setValue("");
+                        $$("cat_name").setValue("");
+                        $$("index_page").disable();
+                        $$("cat_window").show();
+                    }}
+                    , {view: "button", width: 200, value: "Изменить", click: function () {
+                        $$("cat_id").setValue($$("categoriesCombo").getValue());
+                        $$("cat_name").setValue($$("categoriesCombo").getText());
+                        $$("index_page").disable();
+                        $$("cat_window").show();
+                    }}
+                    , {width: 50}
                 ]
             }
         ]
@@ -47,7 +60,7 @@
     loadCategories();
     
     function loadCategories() {
-        webix.ajax().sync().get("${pageContext.request.contextPath}/categories/", null, {
+        webix.ajax().sync().get("${pageContext.request.contextPath}/categories", null, {
             success: function (data, text, request) {
                 var options = [];
                 data =JSON.parse(data);
@@ -62,4 +75,51 @@
             }
         })
     }
+
+    webix.ui({
+        view: "window"
+        , id: "cat_window"
+        , width: 800
+        , height: 450
+        , position: "center"
+        , head: {
+            view: "toolbar", cols: [
+                {view: "label", label: "Редактирование категории"}
+                ,{view: "button", value: "Закрыть", width: 100, click: function () {
+                    $$("cat_window").hide();
+                    $$("index_page").enable();
+                }}
+            ]
+        }
+        , body: {
+            view: "form"
+            , elements: [
+                {view: "text", id: "cat_id", label: "ID категории", labelWidth: 195, readonly: true}
+                ,{view: "text", id: "cat_name", label: "Наименование категории", labelWidth: 195}
+                ,{cols: [
+                    {},{view: "button", width: 150, value: "Сохранить", click: function() {
+                        var cat;
+                        if ($$("cat_id").getValue() === "") {cat = {catName: $$("cat_name").getValue()}}
+                        else {cat = {catId: $$("cat_id").getValue(), catName: $$("cat_name").getValue()}}
+
+                        if ($$("cat_id").getValue() === "") {
+                            /*webix.ajax().headers({"Content-type": "application/json"}).sync().post("${pageContext.request.contextPath}/categories", cat
+                                , {success: function (data, text, request) {
+                                    webix.message(data.message);
+                                },error: function (data, text, request) {
+                                    webix.alert("Что-то пошло не так... Повторите попытку позже.");
+                                }});*/
+                        } else {
+                            /*webix.ajax().headers({"Content-type": "application/json"}).sync().put("${pageContext.request.contextPath}/categories", cat
+                                , {success: function (data, text, request) {
+                                    webix.message(data.message);
+                                },error: function (data, text, request) {
+                                    webix.alert("Что-то пошло не так... Повторите попытку позже.");
+                                }});*/
+                        }
+                    }},{}
+                ]}
+            ]
+        }
+    })
 </script>

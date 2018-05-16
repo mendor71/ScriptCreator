@@ -2,7 +2,10 @@ package com.springapp.controller.rest;
 
 import com.springapp.entity.Role;
 import com.springapp.repository.RoleRepository;
+import com.springapp.services.dao.RolesService;
+import com.springapp.services.dao.UserRolesService;
 import com.springapp.util.JSONResponse;
+import org.json.simple.JSONAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,51 +17,41 @@ import java.util.List;
 @RequestMapping(value = "/roles")
 public class RolesController {
 
-    @Autowired
-    private RoleRepository roleRepository;
+    @Autowired private RolesService rolesService;
+    @Autowired private UserRolesService userRolesService;
 
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public List<Role> getAllRoles() {
-        Iterable<Role> roles = roleRepository.findAll();
-        List<Role> roleList = new ArrayList<Role>();
-
-        for (Role r: roles) {
-            roleList.add(r);
-        }
-
-        return roleList;
+        return rolesService.getAllRoles();
     }
 
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/{roleId}", method = RequestMethod.GET)
-    public Role getRoleById(Integer roleId) {
-        Role role = roleRepository.findOne(roleId);
-        return role;
+    public Role getRoleById(@PathVariable Long roleId) {
+        return rolesService.getRoleById(roleId);
     }
 
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value = "/", method = RequestMethod.POST)
-    public Role createRole(@RequestBody Role role) {
-        return roleRepository.save(role);
+    @RequestMapping(value = "{roleId}/users/{userId}", method = RequestMethod.POST)
+    public JSONAware addUserRole(@PathVariable Long roleId, @PathVariable Long userId) {
+        return userRolesService.addRole(userId, roleId);
     }
 
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value = "/", method = RequestMethod.PUT)
-    public Role updateRole(@RequestBody Role role) {
-        return roleRepository.save(role);
+    @RequestMapping(method = RequestMethod.POST)
+    public JSONAware createRole(@RequestBody Role role) {
+        return rolesService.createRole(role);
     }
 
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value = "/", method = RequestMethod.DELETE)
-    public ResponseEntity deleteRole(@RequestParam(value = "roleId") Integer roleId) {
-        Role role = roleRepository.findOne(roleId);
+    @RequestMapping(method = RequestMethod.PUT)
+    public JSONAware updateRole(@RequestBody Role role) {
+        return rolesService.updateRole(role);
+    }
 
-        if (role == null) {
-            return new ResponseEntity(new JSONResponse(JSONResponse.STATE.NOT_ACCEPTABLE_DATA, "Role not found by ID: " + roleId), HttpStatus.NOT_ACCEPTABLE);
-        }
+    @RequestMapping(value = "{roleId}/users/{userId}", method = RequestMethod.DELETE)
+    public JSONAware removeUserRole(@PathVariable Long roleId, @PathVariable Long userId) {
+        return userRolesService.removeRole(userId, roleId);
+    }
 
-        roleRepository.delete(role);
-        return new ResponseEntity(new JSONResponse(JSONResponse.STATE.OK, "Role deleted: " + role.getRoleName()), HttpStatus.OK);
+    @RequestMapping(value = "/{roleId}", method = RequestMethod.DELETE)
+    public JSONAware deleteRole(@PathVariable Long roleId) {
+        return rolesService.deleteRole(roleId);
     }
 }
