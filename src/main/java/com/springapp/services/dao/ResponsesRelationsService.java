@@ -1,12 +1,9 @@
 package com.springapp.services.dao;
 
-import com.springapp.appcfg.AppProperties;
 import com.springapp.entity.Request;
 import com.springapp.entity.Response;
-import com.springapp.repository.CategoryRepository;
 import com.springapp.repository.RequestRepository;
 import com.springapp.repository.ResponseRepository;
-import com.springapp.repository.StateRepository;
 import org.json.simple.JSONAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

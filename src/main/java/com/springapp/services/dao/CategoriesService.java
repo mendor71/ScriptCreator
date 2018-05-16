@@ -1,7 +1,6 @@
 package com.springapp.services.dao;
 
 import com.springapp.appcfg.AppProperties;
-import com.springapp.controller.rest.CategoriesController;
 import com.springapp.entity.Category;
 import com.springapp.entity.State;
 import com.springapp.repository.CategoryRepository;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static com.springapp.util.JSONResponse.*;
 
 @Service

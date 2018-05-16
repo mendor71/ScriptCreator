@@ -1,7 +1,6 @@
 package com.springapp.services.dao;
 
 import com.springapp.appcfg.AppProperties;
-import com.springapp.controller.rest.UsersController;
 import com.springapp.entity.Category;
 import com.springapp.entity.Role;
 import com.springapp.entity.State;

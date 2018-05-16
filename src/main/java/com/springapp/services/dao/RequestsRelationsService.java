@@ -1,6 +1,5 @@
 package com.springapp.services.dao;
 
-import com.springapp.appcfg.AppProperties;
 import com.springapp.entity.Request;
 import com.springapp.entity.Response;
 import com.springapp.repository.RequestRepository;

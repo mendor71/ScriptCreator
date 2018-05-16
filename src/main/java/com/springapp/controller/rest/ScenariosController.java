@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.springapp.util.JSONResponse.*;
 
-@RestController(value = "/scenarios")
+@RestController
+@RequestMapping(value = "/scenarios")
 public class ScenariosController {
     @Autowired private ScenariosService scenariosService;
 

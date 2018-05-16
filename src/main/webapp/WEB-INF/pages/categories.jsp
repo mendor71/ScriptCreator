@@ -103,19 +103,19 @@
                         else {cat = {catId: $$("cat_id").getValue(), catName: $$("cat_name").getValue()}}
 
                         if ($$("cat_id").getValue() === "") {
-                            /*webix.ajax().headers({"Content-type": "application/json"}).sync().post("${pageContext.request.contextPath}/categories", cat
+                            webix.ajax().headers({"Content-type": "application/json"}).sync().post("${pageContext.request.contextPath}/categories", cat
                                 , {success: function (data, text, request) {
                                     webix.message(data.message);
                                 },error: function (data, text, request) {
                                     webix.alert("Что-то пошло не так... Повторите попытку позже.");
-                                }});*/
+                                }});
                         } else {
-                            /*webix.ajax().headers({"Content-type": "application/json"}).sync().put("${pageContext.request.contextPath}/categories", cat
+                            webix.ajax().headers({"Content-type": "application/json"}).sync().put("${pageContext.request.contextPath}/categories", cat
                                 , {success: function (data, text, request) {
                                     webix.message(data.message);
                                 },error: function (data, text, request) {
                                     webix.alert("Что-то пошло не так... Повторите попытку позже.");
-                                }});*/
+                                }});
                         }
                     }},{}
                 ]}

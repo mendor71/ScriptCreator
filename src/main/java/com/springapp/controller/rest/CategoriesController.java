@@ -1,21 +1,12 @@
 package com.springapp.controller.rest;
 
-import com.springapp.appcfg.AppProperties;
 import com.springapp.entity.Category;
-import com.springapp.entity.State;
-import com.springapp.repository.CategoryRepository;
-import com.springapp.repository.StateRepository;
 import com.springapp.services.dao.CategoriesService;
 import com.springapp.services.dao.UserCategoriesService;
-import com.springapp.util.JSONResponse;
 import org.json.simple.JSONAware;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;

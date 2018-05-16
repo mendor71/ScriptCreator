@@ -1,16 +1,11 @@
 package com.springapp.controller.rest;
 
 import com.springapp.entity.Role;
-import com.springapp.repository.RoleRepository;
 import com.springapp.services.dao.RolesService;
 import com.springapp.services.dao.UserRolesService;
-import com.springapp.util.JSONResponse;
 import org.json.simple.JSONAware;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
