@@ -40,7 +40,7 @@
                         ,{view: "button", value: "Работа с категориями", click: function () {
                             webix.send("${pageContext.request.contextPath}/menu/categories", null, "GET");
                         }}
-                        ,{view: "button", value: "Создание Сценариев", click: function () {
+                        ,{view: "button", value: "Работа со сценариями", click: function () {
                             webix.send("${pageContext.request.contextPath}/menu/scenarios", null, "GET");
                         }}
                         ,{view: "button", value: "Администрирование пользлователей", click: function () {
