@@ -27,9 +27,10 @@
         , container: "page_content"
         , rows: [
             {type: "toolbar", cols:[
-                {}
-                ,{view: "label", label: "Раздел работы с категориями", width: 450, align: "center"}
-                ,{}
+                {view: "button", width: 100, type: "prev", icon: "home", align: "center", label: "В меню", click: function () {
+                    webix.send("${pageContext.request.contextPath}/", null, "GET");
+                }}
+                ,{view: "label", label: "Раздел работы с категориями", align: "center"}
             ]}
             ,{height: 25}
             ,{
