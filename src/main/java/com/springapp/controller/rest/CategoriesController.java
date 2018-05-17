@@ -18,8 +18,8 @@ public class CategoriesController {
     @Autowired private UserCategoriesService userCategoriesService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Category> findAll() {
-        return categoriesService.findAll();
+    public Iterable<Category> findAll(@RequestParam(value = "justActive", required = false) boolean justActive) {
+        return categoriesService.findAll(justActive);
     }
 
     @RequestMapping(value = "/{catId}", method = RequestMethod.GET)
@@ -31,7 +31,7 @@ public class CategoriesController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public JSONAware createCategory(@RequestBody Category category) {
+    public Category createCategory(@RequestBody Category category) {
         return categoriesService.createCategory(category);
     }
 
@@ -40,9 +40,9 @@ public class CategoriesController {
         return userCategoriesService.addCategory(userId, catId);
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
-    public JSONAware updateCategory(@RequestBody Category category) {
-        return categoriesService.updateCategory(category);
+    @RequestMapping(value = "/{catId}", method = RequestMethod.PUT)
+    public Category updateCategory(@PathVariable Long catId, @RequestBody Category category) {
+        return categoriesService.updateCategory(catId, category);
     }
 
     @RequestMapping(value = "/{catId}", method = RequestMethod.DELETE)

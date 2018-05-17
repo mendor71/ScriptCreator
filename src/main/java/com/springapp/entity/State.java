@@ -51,4 +51,15 @@ public class State extends ResourceSupport {
     public void setStateLocalizedName(String stateLocalizedName) {
         this.stateLocalizedName = stateLocalizedName;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        State state = (State) o;
+
+        return stateId != null ? stateId.equals(state.stateId) : state.stateId == null;
+    }
 }

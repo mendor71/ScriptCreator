@@ -41,13 +41,15 @@ public class Role extends ResourceSupport {
         this.roleName = roleName;
     }
 
+
     @Override
-    public boolean equals(Object obj) {
-        if (obj.getClass().equals(this.getClass())) {
-            Role thatRole = (Role) obj;
-            return this.getRoleId().equals(thatRole.roleId);
-        } else {
-            return false;
-        }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Role role = (Role) o;
+
+        return roleId != null ? roleId.equals(role.roleId) : role.roleId == null;
     }
 }

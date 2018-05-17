@@ -1,10 +1,12 @@
 package com.springapp.entity;
 
+import org.springframework.hateoas.ResourceSupport;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "public.scenarios")
-public class Scenario {
+public class Scenario extends ResourceSupport {
     @Id
     @Column(name = "sc_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,6 +15,9 @@ public class Scenario {
     @JoinColumn(name = "sc_cat_id", referencedColumnName = "cat_id")
     @ManyToOne
     private Category scCatId;
+
+    @Column(name = "sc_name")
+    private String scName;
 
     @JoinColumn(name = "sc_state_id", referencedColumnName = "state_id")
     @ManyToOne
@@ -40,5 +45,24 @@ public class Scenario {
 
     public void setScStateId(State scStateId) {
         this.scStateId = scStateId;
+    }
+
+    public String getScName() {
+        return scName;
+    }
+
+    public void setScName(String scName) {
+        this.scName = scName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Scenario scenario = (Scenario) o;
+
+        return scId != null ? scId.equals(scenario.scId) : scenario.scId == null;
     }
 }

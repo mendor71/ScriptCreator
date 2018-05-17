@@ -30,17 +30,28 @@ public class ScenariosService {
     }
 
     public Scenario createScenario(Scenario scenario) {
-        scenario.setScStateId(scenario.getScStateId() != null
-                ? stateRepository.findOne(scenario.getScStateId().getStateId())
-                : stateRepository.findByStateName(appProperties.getDefaultState()));
-        scenario.setScCatId(scenario.getScCatId() != null
-                ? categoryRepository.findOne(scenario.getScCatId().getCatId())
-                : null);
+        if (scenario.getScStateId() != null && scenario.getScStateId().getStateId() != null)
+            scenario.setScStateId(stateRepository.findOne(scenario.getScStateId().getStateId()));
+        else
+            scenario.setScStateId(stateRepository.findByStateName(appProperties.getDefaultState()));
+
+        if (scenario.getScCatId() != null && scenario.getScCatId().getCatId() != null)
+            scenario.setScCatId(categoryRepository.findOne(scenario.getScCatId().getCatId()));
+        else
+            scenario.setScCatId(null);
         return scenarioRepository.save(scenario);
     }
 
-    public Scenario updateScenario(Scenario scenario) {
-        return scenarioRepository.save(scenario);
+    public Scenario updateScenario(Long scId, Scenario scenario) {
+        Scenario dbSc = scenarioRepository.findOne(scId);
+        if (scenario.getScStateId() != null && scenario.getScStateId().getStateId() != null && !scenario.getScStateId().equals(dbSc.getScStateId()))
+            dbSc.setScStateId(stateRepository.findOne(scenario.getScStateId().getStateId()));
+
+        if (scenario.getScCatId() != null && scenario.getScCatId().getCatId() != null && (dbSc.getScCatId() == null || !scenario.getScCatId().equals(dbSc.getScCatId())))
+            dbSc.setScCatId(categoryRepository.findOne(scenario.getScCatId().getCatId()));
+
+        dbSc.setScName(scenario.getScName() != null ? scenario.getScName() : dbSc.getScName());
+        return scenarioRepository.save(dbSc);
     }
 
     public JSONAware deleteScenario(Long scId) {
@@ -48,6 +59,7 @@ public class ScenariosService {
         if (scenario == null) { return createNotFoundResponse("Сценарий не найден по ID"); }
 
         scenario.setScStateId(stateRepository.findByStateName(appProperties.getDefaultDeletedState()));
+        scenarioRepository.save(scenario);
         return createOKResponse("Сценарий " + scId + " помечен как удаленный");
     }
 

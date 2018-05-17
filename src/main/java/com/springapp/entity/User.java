@@ -142,20 +142,15 @@ public class User extends ResourceSupport {
                 '}';
     }
 
-    //    public List<Category> getUserCategories() {
-//        return userCategories;
-//    }
-//
-//    public void setUserCategories(List<Category> userCategories) {
-//        this.userCategories = userCategories;
-//    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
-//    public List<Role> getUserRoles() {
-//        return userRoles;
-//    }
-//
-//    public void setUserRoles(List<Role> userRoles) {
-//        this.userRoles = userRoles;
-//    }
+        User user = (User) o;
+
+        return userId != null ? userId.equals(user.userId) : user.userId == null;
+    }
 }

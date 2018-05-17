@@ -24,7 +24,9 @@ public class RequestsService {
     }
 
     public Request createRequest(Request request) {
-        if (request.getReqScenario() == null) { request.setReqScenario(scenarioRepository.findOne(request.getReqScenario().getScId())); }
+        if (request.getReqScenario() != null && request.getReqScenario().getScId() != null)
+            request.setReqScenario(scenarioRepository.findOne(request.getReqScenario().getScId()));
+
         if (request.getReqState() == null) {
             State state = stateRepository.findByStateName(appProperties.getDefaultState());
             request.setReqState(state);
@@ -33,8 +35,18 @@ public class RequestsService {
         return requestRepository.save(request);
     }
 
-    public Request updateRequest(Request request) {
-        return requestRepository.save(request);
+    public Request updateRequest(Long reqId, Request request) {
+        Request dbRequest = requestRepository.findOne(reqId);
+
+        if (request.getReqScenario() != null && request.getReqScenario().getScId() != null
+                && (dbRequest.getReqScenario() == null || !dbRequest.getReqScenario().equals(request.getReqScenario())))
+            dbRequest.setReqScenario(scenarioRepository.findOne(request.getReqScenario().getScId()));
+
+        if (request.getReqState() != null && request.getReqState().getStateId() != null
+                && (dbRequest.getReqState() == null || !dbRequest.getReqState().equals(request.getReqState())))
+            dbRequest.setReqState(stateRepository.findOne(request.getReqState().getStateId()));
+
+        return requestRepository.save(dbRequest);
     }
 
     public JSONAware deleteRequest(Long reqId) {

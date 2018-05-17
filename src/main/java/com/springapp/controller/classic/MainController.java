@@ -22,9 +22,9 @@ public class MainController {
         return "categories";
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/menu/request_response")
+    @RequestMapping(method = RequestMethod.GET, value = "/menu/scenarios")
     public String requestResponsePage(ModelMap modelMap) {
-        return "request_response";
+        return "scenarios";
     }
 
     @RequestMapping(value = "testUsers", method = RequestMethod.GET)
