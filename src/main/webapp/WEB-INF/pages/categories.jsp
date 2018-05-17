@@ -7,7 +7,7 @@
     <script src="${pageContext.request.contextPath}/resources/webix/codebase/webix.js" type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/webix/codebase/i18n/ru.js" type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/js/jquery-3.2.1.min.js" type="text/javascript"></script>
-    <title>Welcome to MoneyHelper!</title>
+    <title>Создайте () категорию своей мечты!</title>
 </head>
 <body>
 <div class="container" id="page_content" style="width: 100%; height: 100%;">
@@ -34,9 +34,15 @@
             ,{height: 25}
             ,{
                 cols: [
-                    {width: 50}
-                    , {view: "combo", id: "categoriesCombo", label: "Категории", options:[]}
-                    , {}
+                    {width: 25}
+                    , {view: "combo", id: "categoriesCombo", label: "Выберите категорию", labelWidth: "175", width: 500, options:[]}
+                    , {width: 25}
+                    , {view:"checkbox", id: "delCheckbox", label:"Показать удаленные", labelWidth:175, value:0, uncheckValue:0, checkValue:1, on: {
+                        onChange: function (newV, oldV) {
+                            loadCategories(newV === 0)
+                        }
+                    }}
+                    ,{}
                     , {view: "button", width: 200, value: "Добавить", click: function () {
                         $$("cat_id").setValue("");
                         $$("cat_name").setValue("");
@@ -44,12 +50,32 @@
                         $$("cat_window").show();
                     }}
                     , {view: "button", width: 200, value: "Изменить", click: function () {
-                        $$("cat_id").setValue($$("categoriesCombo").getValue());
-                        $$("cat_name").setValue($$("categoriesCombo").getText());
-                        $$("index_page").disable();
-                        $$("cat_window").show();
+                        if ($$("categoriesCombo").getValue() !== "") {
+                            $$("cat_id").setValue($$("categoriesCombo").getValue());
+                            $$("cat_name").setValue($$("categoriesCombo").getText());
+                            $$("index_page").disable();
+                            $$("cat_window").show();
+                        } else {
+                            webix.alert("Выберите категорию для изменения!");
+                        }
+                    }}, {view: "button", width: 200, value: "Удалить", type: "danger", click: function () {
+                        if ($$("categoriesCombo").getValue() !== "") {
+                            webix.confirm({text: "Вы уверены?", callback:function (result) {
+                                if (result) {
+                                    webix.ajax().sync().del("${pageContext.request.contextPath}/categories/" + $$("categoriesCombo").getValue(), null
+                                        , {success: function (data, text, request) {
+                                            webix.message("Изменения внесены успешно!");
+                                            $$("categoriesCombo").getPopup().getList().remove($$("categoriesCombo").getValue());
+                                        },error: function (text, data, request) {
+                                            webix.alert("Что-то пошло не так... Повторите попытку позже.");
+                                        }});
+                                }
+                            }})
+                        } else {
+                            webix.alert("Выберите категорию для удаления!");
+                        }
                     }}
-                    , {width: 50}
+                    , {width: 25}
                 ]
             }
         ]
@@ -57,13 +83,13 @@
 
     webix.i18n.setLocale("ru-RU");
     webix.Date.startOnMonday=true;
-    loadCategories();
+    loadCategories(true);
     
-    function loadCategories() {
-        webix.ajax().sync().get("${pageContext.request.contextPath}/categories", null, {
+    function loadCategories(justActive) {
+        webix.ajax().sync().get("${pageContext.request.contextPath}/categories", {justActive: justActive}, {
             success: function (data, text, request) {
                 var options = [];
-                data =JSON.parse(data);
+                data = JSON.parse(data);
                 for (var i = 0; i < data.length; i++) {
                     options.push({id: data[i].catId, value: data[i].catName});
                 }
@@ -105,15 +131,22 @@
                         if ($$("cat_id").getValue() === "") {
                             webix.ajax().headers({"Content-type": "application/json"}).sync().post("${pageContext.request.contextPath}/categories", cat
                                 , {success: function (data, text, request) {
-                                    webix.message(data.message);
-                                },error: function (data, text, request) {
+                                    webix.message("Изменения внесены успешно!");
+                                    $$("cat_window").hide();
+                                    $$("index_page").enable();
+                                    $$("categoriesCombo").getPopup().getList().parse({id: JSON.parse(data).catId, value: JSON.parse(data).catName});
+                                },error: function (text, data, request) {
                                     webix.alert("Что-то пошло не так... Повторите попытку позже.");
                                 }});
                         } else {
-                            webix.ajax().headers({"Content-type": "application/json"}).sync().put("${pageContext.request.contextPath}/categories", cat
+                            webix.ajax().headers({"Content-type": "application/json"}).sync().put("${pageContext.request.contextPath}/categories/" + cat.catId, cat
                                 , {success: function (data, text, request) {
-                                    webix.message(data.message);
-                                },error: function (data, text, request) {
+                                    webix.message("Изменения внесены успешно!");
+                                    $$("cat_window").hide();
+                                    $$("index_page").enable();
+                                    $$("categoriesCombo").getPopup().getList().remove(JSON.parse(data).catId);
+                                    $$("categoriesCombo").getPopup().getList().parse({id: JSON.parse(data).catId, value: JSON.parse(data).catName});
+                                },error: function (text, data, request) {
                                     webix.alert("Что-то пошло не так... Повторите попытку позже.");
                                 }});
                         }
