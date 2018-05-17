@@ -7,7 +7,7 @@
     <script src="${pageContext.request.contextPath}/resources/webix/codebase/webix.js" type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/webix/codebase/i18n/ru.js" type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/js/jquery-3.2.1.min.js" type="text/javascript"></script>
-    <title>Создайте () категорию своей мечты!</title>
+    <title>Создайте (или удалите) категорию своей мечты!</title>
 </head>
 <body>
 <div class="container" id="page_content" style="width: 100%; height: 100%;">
