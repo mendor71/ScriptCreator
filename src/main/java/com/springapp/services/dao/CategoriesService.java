@@ -20,37 +20,36 @@ public class CategoriesService {
     @Autowired private StateRepository stateRepository;
     @Autowired private AppProperties appProperties;
 
-    public List<Category> findAll() {
-        Iterable<Category> categories = categoryRepository.findAll();
-        List<Category> categoryList = new ArrayList<Category>();
-        for (Category c: categories) {
-            categoryList.add(c);
-        }
-        return categoryList;
+    public Iterable<Category> findAll(boolean justActive) {
+        if (justActive)
+            return categoryRepository.findByCatStateIdStateName(appProperties.getDefaultState());
+        else
+            return categoryRepository.findAll();
     }
 
     public Category getCategoryById(Long catId) {
         return categoryRepository.findOne(catId);
     }
 
-    public JSONAware createCategory(Category category) {
-        if (category.getCatStateId() == null) {
+    public Category createCategory(Category category) {
+        if (category.getCatStateId() == null && category.getCatStateId().getStateId() != null) {
             State state = stateRepository.findByStateName(appProperties.getDefaultState());
             category.setCatStateId(state);
         }
 
-        categoryRepository.save(category);
-        return createOKResponse("Категория успешно создана!");
+        return categoryRepository.save(category);
     }
 
-    public JSONAware updateCategory(Category category) {
-        Category dbCat = categoryRepository.findOne(category.getCatId());
-        if (!category.getCatStateId().equals(dbCat.getCatStateId()))
-            dbCat.setCatStateId(stateRepository.findOne(category.getCatStateId().getStateId()));
+    public Category updateCategory(Long catId, Category category) {
+        Category dbCat = categoryRepository.findOne(catId);
+        if (category.getCatStateId() != null
+                && category.getCatStateId().getStateId() != null
+                && !category.getCatStateId().equals(dbCat.getCatStateId()))
+                    dbCat.setCatStateId(stateRepository.findOne(category.getCatStateId().getStateId()));
         if (!category.getCatName().equals(dbCat.getCatName()))
             dbCat.setCatName(category.getCatName());
 
-        return createOKResponse("Категория успешно изменена!");
+        return categoryRepository.save(dbCat);
     }
 
     public JSONAware deleteCategory(Long catId) {
