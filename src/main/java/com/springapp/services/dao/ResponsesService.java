@@ -7,6 +7,7 @@ import com.springapp.entity.State;
 import com.springapp.repository.ResponseRepository;
 import com.springapp.repository.ScenarioRepository;
 import com.springapp.repository.StateRepository;
+import jdk.nashorn.internal.runtime.arrays.IteratorAction;
 import org.json.simple.JSONAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,10 @@ public class ResponsesService {
 
     public Response findResponseById(Long respId) {
         return responseRepository.findOne(respId);
+    }
+
+    public Iterable<Response> findResponsesByScenarioId(Long scId) {
+        return responseRepository.findByRespScenarioScId(scId);
     }
 
     public Iterable<Response> findResponsesByParentRequestId(Long reqId) {

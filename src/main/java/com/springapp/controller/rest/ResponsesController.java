@@ -29,12 +29,17 @@ public class ResponsesController {
         return responsesService.findResponseById(respId);
     }
 
-    @RequestMapping(value = "/parent_request/{reqId}")
+    @RequestMapping(value = "/scenario/{scId}", method = RequestMethod.GET)
+    public Iterable<Response> findResponsesByScenarioId(@PathVariable Long scId) {
+        return responsesService.findResponsesByScenarioId(scId);
+    }
+
+    @RequestMapping(value = "/parent_request/{reqId}", method = RequestMethod.GET)
     public Iterable<Response> findResponsesByParentRequestId(@PathVariable Long reqId) {
         return responsesService.findResponsesByParentRequestId(reqId);
     }
 
-    @RequestMapping(value = "/child_request/{reqId}")
+    @RequestMapping(value = "/child_request/{reqId}", method = RequestMethod.GET)
     public Iterable<Response> findResponsesByChildRequestId(@PathVariable Long reqId) {
         return responsesService.findResponsesByChildRequestId(reqId);
     }

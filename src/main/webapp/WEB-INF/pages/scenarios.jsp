@@ -94,31 +94,66 @@
             ,{height: 25}
             ,{id: "scenario_content_form", disabled: true, view: "form", elements: [
                 {cols: [
-                    {width: 200, rows: [
-                        {height: 40}
-                        ,{view: "button", value: "Добавить элемент", click: function () {
-                            if (current_element_id === -1) {
-                                if ($$("scenarioCombo").getValue() !== "") {
-                                    setRequestEditWindow("", "", $$("scenarioCombo").getValue(), "");
-                                } else {
-                                    webix.alert("Выберите сценарий для изменения!");
-                                }
-                            } else {
-                                if (current_obj_type === "req")
-                                    setRequestEditWindow("", current_element_id, $$("scenarioCombo").getValue(), "");
-                                else
-                                    setResponseEditWindow("", current_element_id, $$("scenarioCombo").getValue(), "");
-                            }
-                        }}
-                        ,{view: "button", value: "Изменить элемент"}
-                        ,{view: "button", value: "Удалить элемент"}
+                    {rows: [
+                        {height: 38}
+                        ,{
+                            view:"menu", id:"scenario_actions_menu"
+                            ,layout:"y"
+                            , width:200
+                            ,autowidth:true
+                            ,data:[
+                                {id:"add_item", value:"Добавить элемент", submenu: [
+                                    {id: "add_new", value: "Добавить новый"}
+                                    , {id: "add_exists", value: "Выбрать существующий"}
+                                ]}
+                                ,{ id:"change_item", value:"Изменить элемент" }
+                                ,{ id:"remove_item", value:"Удалить элемент" }
+                            ]
+                            , on:{
+                                onMenuItemClick:function(id){
+                                    if (id === "add_new") {
+                                        if (current_element_id === -1) {
+                                            if ($$("scenarioCombo").getValue() !== "") {
+                                                setRequestEditWindow("", "", $$("scenarioCombo").getValue(), "");
+                                            } else {
+                                                webix.alert("Выберите сценарий для изменения!");
+                                            }
+                                        } else {
+                                            if (current_obj_type === "req")
+                                                setRequestEditWindow("", current_element_id, $$("scenarioCombo").getValue(), "");
+                                            else
+                                                setResponseEditWindow("", current_element_id, $$("scenarioCombo").getValue(), "");
+                                        }
+                                    } else if (id === "add_exists") {
+                                        if (current_obj_type === "req")
+                                            loadAllScenarioRequests($$("scenarioCombo").getValue());
+                                        else
+                                            loadAllScenarioResponses($$("scenarioCombo").getValue());
+                                        $$("add_old_item_window").show();
+                                        $$("index_page").disable();
+                                    } else if (id === "change_item") {
 
+                                    } else if (id === "remove_item") {
+                                        webix.confirm({text: "Вы уверены?", callback: function (result) {
+                                            if (result) {
+                                                if (current_obj_type === "req")
+                                                    removeChildRequest(current_element_id === -1 ? null : current_element_id, $$("data_list").getSelectedId());
+                                                else
+                                                    removeChildResponse(current_element_id, $$("data_list").getSelectedId());
+                                            }
+                                        }});
+                                    }
+                                }
+                            }
+                        }
                     ]}
                     ,{width: 25}
                     ,{rows: [
                         {view: "label", id: "list_label", align: "center", label: "Корневые вопросы", css: "header_label"}
                         , {view: "list", height: 250, id: "data_list", select: true, template: "#id#. #text#", on: {
                             onItemClick: function (id) {
+
+                            }, onItemDblClick: function (id) {
                                 saveCurrentContent(prev_items);
                                 current_element_id = id;
 
@@ -131,8 +166,6 @@
                                 else
                                     loadChildRequests(id);
                                 current_obj_type = current_obj_type === "req" ? "resp" : "req";
-                            }, onItemDblClick: function (id) {
-
                             }
                         }}
                         ,{height: 25}
@@ -257,6 +290,38 @@
         })
     }
 
+    function loadAllScenarioRequests(scId) {
+        webix.ajax().sync().get("${pageContext.request.contextPath}/requests/scenario/" + scId, {kernel: false}, {
+            success: function (data, text, request) {
+                var options = [];
+                data = JSON.parse(data);
+                for (var i = 0; i < data.length; i++)
+                    options.push({id: data[i].reqId, value: data[i].reqText});
+
+                $$("exists_items_list").getPopup().getList().clearAll();
+                $$("exists_items_list").getPopup().getList().parse(options);
+            }, error: function (data, text, request) {
+                webix.alert("Что-то пошло не так... Повторите попытку позже.");
+            }
+        });
+    }
+
+    function loadAllScenarioResponses(scId) {
+        webix.ajax().sync().get("${pageContext.request.contextPath}/responses/scenario/" + scId, null, {
+            success: function (data, text, request) {
+                var options = [];
+                data = JSON.parse(data);
+                for (var i = 0; i < data.length; i++)
+                    options.push({id: data[i].respId, value: data[i].respText});
+
+                $$("exists_items_list").getPopup().getList().clearAll();
+                $$("exists_items_list").getPopup().getList().parse(options);
+            }, error: function (data, text, request) {
+                webix.alert("Что-то пошло не так... Повторите попытку позже.");
+            }
+        });
+    }
+
     function loadChildResponses(reqId) {
         $$("data_list").clearAll();
         webix.ajax().sync().get("${pageContext.request.contextPath}/responses/parent_request/" + reqId, null, {
@@ -319,6 +384,35 @@
                 },error: function (text, data, request) {
                     webix.alert("Что-то пошло не так... Повторите попытку позже.");
             }});
+    }
+
+    function removeChildResponse(reqId, respId) {
+        webix.ajax().sync().del("${pageContext.request.contextPath}/requests/" + reqId + "/child_response/" + respId, null
+            , {success: function (data, text, request) {
+                webix.message("Изменения внесены успешно!");
+                $$("data_list").remove(reqId);
+            },error: function (text, data, request) {
+                webix.alert("Что-то пошло не так... Повторите попытку позже.");
+            }}
+        )
+    }
+
+    function removeChildRequest(respId, reqId) {
+        var url;
+        if (respId === null) {
+            url = "${pageContext.request.contextPath}/requests/" + reqId;
+        } else {
+            url = "${pageContext.request.contextPath}/responses/" + respId + "/child_request/" + reqId;
+        }
+
+        webix.ajax().sync().del(url, null
+            , {success: function (data, text, request) {
+                webix.message("Изменения внесены успешно!");
+                $$("data_list").remove(reqId);
+            },error: function (text, data, request) {
+                webix.alert("Что-то пошло не так... Повторите попытку позже.");
+            }}
+        )
     }
 
     function addChildRequest(responseId, request) {
@@ -480,6 +574,46 @@
                 ,{cols: [
                     {},{view: "button", type: "form", value: "Сохранить", click: function () {
                         saveResponseChanges($$("resp_id").getValue(), $$("resp_sc_id").getValue(), $$("resp_parent_req_id").getValue(), $$("resp_text").getValue())
+                    }}
+                ]}
+            ]
+        }
+    });
+
+    webix.ui({
+        view: "window"
+        , id: "add_old_item_window"
+        , width: 800
+        , height: 450
+        , position: "center"
+        , head: {
+            view: "toolbar", cols: [
+                {view: "label", label: "Выбрать вопрос из списка"}
+                ,{view: "button", value: "Закрыть", width: 100, click: function () {
+                    $$("add_old_item_window").hide();
+                    $$("index_page").enable();
+                }}
+            ]
+        }
+        , body: {
+            view: "form"
+            , elements: [
+                {view: "combo", id: "exists_items_list", options: [], label: "Выберите элемент", labelWidth: 195, on: {
+                    onChange: function (id) {
+                        $$("exists_item_text").setValue($$("exists_items_list").getText());
+                    }
+                }}
+                ,{view: "textarea", id: "exists_item_text", label: "Полный текст", labelWidth: 195}
+                ,{cols: [
+                    {},{view: "button", type: "form", value: "Сохранить", click: function () {
+                        if (current_obj_type === "req") {
+                            addChildRequest(current_element_id, {reqId: $$("exists_items_list").getValue()});
+                        } else {
+                            addChildResponse(current_element_id, {respId: $$("exists_items_list").getValue()});
+                        }
+
+                        $$("add_old_item_window").hide();
+                        $$("index_page").enable();
                     }}
                 ]}
             ]
