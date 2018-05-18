@@ -107,4 +107,14 @@ public class Response extends ResourceSupport {
         return respId != null ? respId.equals(response.respId) : response.respId == null;
     }
 
+    @Override
+    public String toString() {
+        return "Response{" +
+                "respId=" + respId +
+                ", respText='" + respText + '\'' +
+                ", respPrior=" + respPrior +
+                ", respScenario=" + respScenario +
+                ", respState=" + respState +
+                '}';
+    }
 }

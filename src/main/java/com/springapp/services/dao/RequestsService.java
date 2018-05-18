@@ -2,13 +2,18 @@ package com.springapp.services.dao;
 
 import com.springapp.appcfg.AppProperties;
 import com.springapp.entity.Request;
+import com.springapp.entity.Response;
 import com.springapp.entity.State;
 import com.springapp.repository.RequestRepository;
+import com.springapp.repository.ResponseRepository;
 import com.springapp.repository.ScenarioRepository;
 import com.springapp.repository.StateRepository;
 import org.json.simple.JSONAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.List;
 
 import static com.springapp.util.JSONResponse.*;
 
@@ -19,18 +24,40 @@ public class RequestsService {
     @Autowired private StateRepository stateRepository;
     @Autowired private AppProperties appProperties;
 
+    @Autowired private ResponsesService responsesService;
+
     public Request findRequestById(Long reqId) {
         return requestRepository.findOne(reqId);
+    }
+
+    public Iterable<Request> findRequestsByScenarioId(Long scId, boolean kernel) {
+        if (kernel)
+            return requestRepository.findByReqScenarioScId(scId);
+        else
+            return requestRepository.findByReqScenarioScIdAndParentResponseListIsNull(scId);
+    }
+
+    public Iterable<Request> findByParentResponseId(Long respId) {
+        List<Response> list = Collections.singletonList(responsesService.findResponseById(respId));
+        return requestRepository.findByParentResponseListContaining(list);
+    }
+
+    public Iterable<Request> findByChildResponseId(Long respId) {
+        List<Response> list = Collections.singletonList(responsesService.findResponseById(respId));
+        return requestRepository.findByChildResponseListContaining(list);
     }
 
     public Request createRequest(Request request) {
         if (request.getReqScenario() != null && request.getReqScenario().getScId() != null)
             request.setReqScenario(scenarioRepository.findOne(request.getReqScenario().getScId()));
 
-        if (request.getReqState() == null) {
-            State state = stateRepository.findByStateName(appProperties.getDefaultState());
-            request.setReqState(state);
-        }
+        if (request.getReqState() != null && request.getReqState().getStateId() != null)
+            request.setReqState(stateRepository.findOne(request.getReqState().getStateId()));
+        else
+            request.setReqState(stateRepository.findByStateName(appProperties.getDefaultState()));
+
+        if (request.getReqPrior() == null)
+            request.setReqPrior(0);
 
         return requestRepository.save(request);
     }
@@ -45,6 +72,12 @@ public class RequestsService {
         if (request.getReqState() != null && request.getReqState().getStateId() != null
                 && (dbRequest.getReqState() == null || !dbRequest.getReqState().equals(request.getReqState())))
             dbRequest.setReqState(stateRepository.findOne(request.getReqState().getStateId()));
+
+        if (request.getReqText() != null && !request.getReqText().equals(dbRequest.getReqText()))
+            dbRequest.setReqText(request.getReqText());
+
+        if (request.getReqPrior() != null && !request.getReqPrior().equals(dbRequest.getReqPrior()))
+            dbRequest.setReqPrior(request.getReqPrior());
 
         return requestRepository.save(dbRequest);
     }

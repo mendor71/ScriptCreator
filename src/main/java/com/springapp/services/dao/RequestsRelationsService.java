@@ -6,6 +6,8 @@ import com.springapp.repository.RequestRepository;
 import com.springapp.repository.ResponseRepository;
 import org.json.simple.JSONAware;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import static com.springapp.util.JSONResponse.*;
@@ -17,10 +19,10 @@ public class RequestsRelationsService {
 
     @Autowired private ResponsesService responsesService;
 
-    public JSONAware addChildResponse(Long reqId, Response response) {
+    public ResponseEntity addChildResponse(Long reqId, Response response) {
         Request request = requestRepository.findOne(reqId);
 
-        if (request == null) { return createNotFoundResponse("Ответ не найден по ID: " + reqId);}
+        if (request == null) { return new ResponseEntity(createNotFoundResponse("Ответ не найден по ID: " + reqId), HttpStatus.BAD_REQUEST);}
 
         if (response.getRespId() != null && response.getRespId() != 0) {
             response = responseRepository.findOne(response.getRespId());
@@ -29,10 +31,10 @@ public class RequestsRelationsService {
         }
 
         request.getChildResponseList().add(response);
-        responseRepository.save(response);
+        response = responseRepository.save(response);
         requestRepository.save(request);
 
-        return createOKResponse("Связка успешно установлена");
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 
     public JSONAware removeChildResponse(Long reqId, Long respId) {

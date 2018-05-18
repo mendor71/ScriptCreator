@@ -6,7 +6,10 @@ import com.springapp.services.dao.ResponsesRelationsService;
 import com.springapp.services.dao.ResponsesService;
 import org.json.simple.JSONAware;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.springapp.util.JSONResponse.*;
 
@@ -17,30 +20,38 @@ public class ResponsesController {
     @Autowired private ResponsesRelationsService responsesRelationsService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public Iterable<Response> getAllResponses() {
-        return responsesService.getAllResponses();
+    public Iterable<Response> findAllResponses() {
+        return responsesService.findAllResponses();
     }
 
     @RequestMapping(value = "/{respId}", method = RequestMethod.GET)
-    public Response getResponseById(@PathVariable Long respId) {
-        return responsesService.getResponseById(respId);
+    public Response findResponseById(@PathVariable Long respId) {
+        return responsesService.findResponseById(respId);
+    }
+
+    @RequestMapping(value = "/parent_request/{reqId}")
+    public Iterable<Response> findResponsesByParentRequestId(@PathVariable Long reqId) {
+        return responsesService.findResponsesByParentRequestId(reqId);
+    }
+
+    @RequestMapping(value = "/child_request/{reqId}")
+    public Iterable<Response> findResponsesByChildRequestId(@PathVariable Long reqId) {
+        return responsesService.findResponsesByChildRequestId(reqId);
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public JSONAware createResponse(@RequestBody Response response) {
-        responsesService.createResponse(response);
-        return createOKResponse("Ответ успешно создан");
+    public Response createResponse(@RequestBody Response response) {
+        return responsesService.createResponse(response);
     }
 
     @RequestMapping(value = "/{respId}/child_request", method = RequestMethod.POST)
-    public JSONAware addChildRequest(@PathVariable Long respId, @RequestBody Request request) {
+    public ResponseEntity addChildRequest(@PathVariable Long respId, @RequestBody Request request) {
         return responsesRelationsService.addChildRequest(respId, request);
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
-    public JSONAware updateResponse(@RequestBody Response response) {
-        responsesService.updateResponse(response);
-        return createOKResponse("Ответ успешно обновлен");
+    @RequestMapping(value = "/{respId}", method = RequestMethod.PUT)
+    public Response updateResponse(@PathVariable Long respId, @RequestBody Response response) {
+        return responsesService.updateResponse(respId, response);
     }
 
     @RequestMapping(value = "/{respId}", method = RequestMethod.DELETE)

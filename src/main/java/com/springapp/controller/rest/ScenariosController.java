@@ -19,15 +19,13 @@ public class ScenariosController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public JSONAware createScenario(@RequestBody Scenario scenario) {
-        scenariosService.createScenario(scenario);
-        return createOKResponse("Сценарий успешно создан");
+    public Scenario createScenario(@RequestBody Scenario scenario) {
+        return scenariosService.createScenario(scenario);
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
-    public JSONAware updateScenario(@RequestBody Scenario scenario) {
-        scenariosService.updateScenario(scenario);
-        return createOKResponse("Сценарий успешно обновлен");
+    @RequestMapping(value = "/{scId}", method = RequestMethod.PUT)
+    public Scenario updateScenario(@PathVariable Long scId, @RequestBody Scenario scenario) {
+        return scenariosService.updateScenario(scId, scenario);
     }
 
     @RequestMapping(value = "/{scId}",method = RequestMethod.DELETE)
