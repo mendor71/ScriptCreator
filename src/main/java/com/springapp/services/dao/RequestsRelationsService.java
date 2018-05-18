@@ -31,6 +31,8 @@ public class RequestsRelationsService {
         }
 
         request.getChildResponseList().add(response);
+        response.getParentRequestList().add(request);
+
         response = responseRepository.save(response);
         requestRepository.save(request);
 

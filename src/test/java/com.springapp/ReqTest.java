@@ -1,5 +1,6 @@
 package com.springapp;
 
+import com.springapp.entity.Request;
 import com.springapp.services.dao.RequestsService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,4 +21,9 @@ public class ReqTest {
         System.out.println(requestsService.findByParentResponseId(7L));
     }
 
+    @Test
+    public void testLoadKernelScenarioRequestList() {
+        Iterable<Request> kernelRequest = requestsService.findRequestsByScenarioId(1L, true);
+        kernelRequest.forEach(System.out::println);
+    }
 }

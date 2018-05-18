@@ -45,6 +45,7 @@
                 <prop key="javax.persistence.schema-generation.database.action">none</prop>
                 <prop key="hibernate.ejb.use_class_enhancer">true</prop>
                 <prop key="hibernate.enable_lazy_load_no_trans">true</prop>
+                <prop key="hibernate.show_sql">true</prop>
             </props>
         </property>
         <!-- Set base package of your entities -->

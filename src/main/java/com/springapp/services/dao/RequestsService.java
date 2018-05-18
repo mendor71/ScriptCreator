@@ -31,7 +31,7 @@ public class RequestsService {
     }
 
     public Iterable<Request> findRequestsByScenarioId(Long scId, boolean kernel) {
-        if (kernel)
+        if (!kernel)
             return requestRepository.findByReqScenarioScId(scId);
         else
             return requestRepository.findByReqScenarioScIdAndParentResponseListIsNull(scId);

@@ -30,6 +30,7 @@ public class ResponsesRelationsService {
         }
 
         response.getChildRequestList().add(request);
+        request.getParentResponseList().add(response);
 
         request = requestRepository.save(request);
         responseRepository.save(response);

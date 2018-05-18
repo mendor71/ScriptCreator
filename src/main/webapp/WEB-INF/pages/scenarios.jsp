@@ -24,8 +24,11 @@
     }
 </style>
 <script>
-    var current_req_id = -1;
-    var current_resp_id = -1;
+    var current_obj_type = "req";
+    var current_element_id = -1;
+
+    var next_items = [];
+    var prev_items = [];
 
     webix.ui({
         id: "index_page"
@@ -43,14 +46,16 @@
                         {width: 25}
                         , {view: "combo", id: "scenarioCombo", label: "Выберите сценарий", labelWidth: "175", width: 500, options:[], on:{
                             onChange: function (id) {
-                                if (id !== "")
+                                if (id !== "") {
                                     loadScenarioKernelRequests(id);
+                                    $$("scenario_content_form").enable();
+                                }
                             }
                         }}
                         , {width: 25}
                         , {view:"checkbox", id: "delCheckbox", label:"Показать удаленные", labelWidth:175, value:0, uncheckValue:0, checkValue:1, on: {
                             onChange: function (newV, oldV) {
-                                loadScenarios(newV === 0)
+                                loadScenarios(newV === 0);
                             }
                         }}
                         ,{}
@@ -87,69 +92,64 @@
                 }
             ]}
             ,{height: 25}
-            ,{view: "form", elements: [
-                {cols:[
-                    {rows: [
-                        {cols: [
-                            {view: "label", css: "header_label", label: "Вопросы", height: 50}
-                            ,{view: "button", type: "form", label: "Добавить корневой", click: function () {
+            ,{id: "scenario_content_form", disabled: true, view: "form", elements: [
+                {cols: [
+                    {width: 200, rows: [
+                        {height: 40}
+                        ,{view: "button", value: "Добавить элемент", click: function () {
+                            if (current_element_id === -1) {
                                 if ($$("scenarioCombo").getValue() !== "") {
                                     setRequestEditWindow("", "", $$("scenarioCombo").getValue(), "");
                                 } else {
-                                    webix.alert({type: "confirm-warning", text: "Для начала выберите сценарий!"});
+                                    webix.alert("Выберите сценарий для изменения!");
                                 }
-                            }}
-                            ,{view: "button", label: "Добавить дочерный ответ", click: function () {
-                                if ($$("req_list").getSelectedId() !== "") {
-                                    setResponseEditWindow("",$$("req_list").getSelectedId(),$$("scenarioCombo").getValue(),"");
-                                } else {
-                                    webix.alert({type: "confirm-warning", text: "Для начала выберите один из вопросов!"});
-                                }
-                            }}
-                            ,{view: "button", type: "danger", label: "Удалить дочерный ответ", click: function () {
-
-                            }}
-                            ,{view: "button", label: "Родительские Ответы", click: function () {
-                                if ($$("req_list").getSelectedId() !== "") {
-                                    loadParentResponses($$("req_list").getSelectedId());
-                                } else {
-                                    webix.alert({type: "confirm-warning", text: "Для начала выберите один из вопросов!"});
-                                }
-                            }}
-                        ]}
-                        , {height: 15}
-                        , {view: "list", id: "req_list", select: true, template: "#id#. #text#", on: {
-                            onItemClick: function (id) {
-                                loadChildResponses(id);
-                            }, onItemDblClick: function (id) {
-                                /*TODO update item*/
+                            } else {
+                                if (current_obj_type === "req")
+                                    setRequestEditWindow("", current_element_id, $$("scenarioCombo").getValue(), "");
+                                else
+                                    setResponseEditWindow("", current_element_id, $$("scenarioCombo").getValue(), "");
                             }
                         }}
+                        ,{view: "button", value: "Изменить элемент"}
+                        ,{view: "button", value: "Удалить элемент"}
+
                     ]}
-                    ,{width: 50}
+                    ,{width: 25}
                     ,{rows: [
-                        {cols: [
-                            {view: "label", css: "header_label", label: "Ответы", height: 50}
-                            ,{view: "button", label: "Добавить дочерный вопрос"}
-                            ,{view: "button", type: "danger", label: "Удалить дочерный ответ"}
-                            ,{view: "button", label: "Родительские Вопросы", click: function () {
-                                if ($$("resp_list").getSelectedId() !== "") {
-                                    loadParentRequests($$("resp_list").getSelectedId());
-                                } else {
-                                    webix.alert({type: "confirm-warning", text: "Для начала выберите один из ответов!"});
-                                }
-                            }}
-                        ]}
-                        , {height: 15}
-                        ,{view: "list", id: "resp_list", select: true, template: "#id#. #text#", on: {
+                        {view: "label", id: "list_label", align: "center", label: "Корневые вопросы", css: "header_label"}
+                        , {view: "list", height: 250, id: "data_list", select: true, template: "#id#. #text#", on: {
                             onItemClick: function (id) {
-                                loadChildRequests(id)
+                                saveCurrentContent(prev_items);
+                                current_element_id = id;
+
+                                var newLabel = current_obj_type === "req" ? "Ответы на: " : "Вопросы на: ";
+                                newLabel += "\"" + $$("data_list").getItem(id).text + "\"";
+                                $$("list_label").config.label = newLabel;
+                                $$("list_label").refresh();
+                                if (current_obj_type === "req")
+                                    loadChildResponses(id);
+                                else
+                                    loadChildRequests(id);
+                                current_obj_type = current_obj_type === "req" ? "resp" : "req";
                             }, onItemDblClick: function (id) {
-                                /*TODO update item*/
+
                             }
                         }}
-                    ]}
+                        ,{height: 25}
+                        ,{cols: [
+                            {},{view: "button", label: "Шаг назад", width: 150, click: function () {
+                                switchDataListContent(prev_items, next_items);
+                            }}
+                            ,{width: 25}
+                            ,{view: "button", label: "К корневым", width: 150, click: function () {
 
+                            }}
+                            ,{width: 25}
+                            ,{view: "button", label: "Шаг вперед", width: 150, click: function () {
+                                switchDataListContent(next_items, prev_items);
+                            }},{}
+                        ]}
+                    ]}
                 ]}
             ]}
         ]
@@ -159,6 +159,30 @@
     webix.Date.startOnMonday=true;
 
     loadScenarios(true);
+
+    function switchDataListContent(extractFrom, appendIn) {
+        var switch_to = extractFrom.pop();
+        if (switch_to !== undefined) {
+            saveCurrentContent(appendIn);
+            current_element_id = switch_to.current_element_id;
+            current_obj_type = switch_to.type;
+            $$("list_label").config.label = switch_to.label;
+            $$("list_label").refresh();
+            $$("data_list").clearAll();
+            for (var i = 0; i < switch_to.list.length; i++) {
+                $$("data_list").add({id: switch_to.list[i].id, text: switch_to.list[i].text});
+            }
+        }
+    }
+
+    function saveCurrentContent(saveTo) {
+        var prevlistContent = [];
+        $$("data_list").data.each(function (obj) {
+            prevlistContent.push({id: obj.id, text: obj.text});
+        });
+        var currentContent = {type: current_obj_type, label: $$("list_label").config.label, list: prevlistContent, current_element_id: current_element_id};
+        saveTo.push(currentContent);
+    }
 
     function setScenarioEditWindow(scId, scName) {
         $$("sc_id").setValue(scId);
@@ -221,12 +245,12 @@
     }
 
     function loadScenarioKernelRequests(scId) {
-        $$("req_list").clearAll();
+        $$("data_list").clearAll();
         webix.ajax().sync().get("${pageContext.request.contextPath}/requests/scenario/" + scId, {kernel: true}, {
             success: function (data, text, request) {
                 data = JSON.parse(data);
                 for (var i = 0; i < data.length; i++)
-                    $$("req_list").add({id: data[i].reqId, text: data[i].reqText});
+                    $$("data_list").add({id: data[i].reqId, text: data[i].reqText});
             }, error: function (data, text, request) {
                 webix.alert("Что-то пошло не так... Повторите попытку позже.");
             }
@@ -234,12 +258,12 @@
     }
 
     function loadChildResponses(reqId) {
-        $$("resp_list").clearAll();
+        $$("data_list").clearAll();
         webix.ajax().sync().get("${pageContext.request.contextPath}/responses/parent_request/" + reqId, null, {
             success: function (data, text, request) {
                 data = JSON.parse(data);
                 for (var i = 0; i < data.length; i++)
-                    $$("resp_list").add({id: data[i].respId, text: data[i].respText});
+                    $$("data_list").add({id: data[i].respId, text: data[i].respText});
             }, error: function (data, text, request) {
                 webix.alert("Что-то пошло не так... Повторите попытку позже.");
             }
@@ -247,12 +271,12 @@
     }
 
     function loadParentResponses(reqId) {
-        $$("resp_list").clearAll();
+        $$("data_list").clearAll();
         webix.ajax().sync().get("${pageContext.request.contextPath}/responses/parent_request/" + reqId, null, {
             success: function (data, text, request) {
                 data = JSON.parse(data);
                 for (var i = 0; i < data.length; i++)
-                    $$("resp_list").add({id: data[i].respId, text: data[i].respText});
+                    $$("data_list").add({id: data[i].respId, text: data[i].respText});
             }, error: function (data, text, request) {
                 webix.alert("Что-то пошло не так... Повторите попытку позже.");
             }
@@ -260,12 +284,12 @@
     }
 
     function loadChildRequests(respId) {
-        $$("req_list").clearAll();
+        $$("data_list").clearAll();
         webix.ajax().sync().get("${pageContext.request.contextPath}/requests/parent_response/" + respId, null, {
             success: function (data, text, request) {
                 data = JSON.parse(data);
                 for (var i = 0; i < data.length; i++)
-                    $$("req_list").add({id: data[i].reqId, text: data[i].reqText});
+                    $$("data_list").add({id: data[i].reqId, text: data[i].reqText});
             }, error: function (data, text, request) {
                 webix.alert("Что-то пошло не так... Повторите попытку позже.");
             }
@@ -273,39 +297,65 @@
     }
 
     function loadParentRequests(respId) {
-        $$("req_list").clearAll();
+        $$("data_list").clearAll();
         webix.ajax().sync().get("${pageContext.request.contextPath}/requests/child_response/" + respId, null, {
             success: function (data, text, request) {
                 data = JSON.parse(data);
                 for (var i = 0; i < data.length; i++)
-                    $$("req_list").add({id: data[i].reqId, text: data[i].reqText});
+                    $$("data_list").add({id: data[i].reqId, text: data[i].reqText});
             }, error: function (data, text, request) {
                 webix.alert("Что-то пошло не так... Повторите попытку позже.");
             }
         });
     }
 
+    function addChildResponse(requestId, response) {
+        webix.ajax().headers({"Content-type": "application/json"}).sync()
+            .post("${pageContext.request.contextPath}/requests/" + requestId + "/child_response/", response
+                , {success: function (data, text, request) {
+                    data = JSON.parse(data);
+                    webix.message("Изменения внесены успешно!");
+                    $$("data_list").add({id: data.respId, text: data.respText});
+                },error: function (text, data, request) {
+                    webix.alert("Что-то пошло не так... Повторите попытку позже.");
+            }});
+    }
+
+    function addChildRequest(responseId, request) {
+        webix.ajax().headers({"Content-type": "application/json"}).sync()
+            .post("${pageContext.request.contextPath}/responses/" + responseId + "/child_request/", request
+                , {success: function (data, text, request) {
+                    data = JSON.parse(data);
+                    webix.message("Изменения внесены успешно!");
+                    $$("data_list").add({id: data.reqId, text: data.reqText});
+                },error: function (text, data, request) {
+                    webix.alert("Что-то пошло не так... Повторите попытку позже.");
+            }});
+    }
+
+    function addKernelRequest(request) {
+        webix.ajax().headers({"Content-type": "application/json"}).sync().post("${pageContext.request.contextPath}/requests/", request
+            , {success: function (data, text, request) {
+                data = JSON.parse(data);
+                webix.message("Изменения внесены успешно!");
+                $$("data_list").add({id: data.reqId, text: data.reqText});
+            },error: function (text, data, request) {
+                webix.alert("Что-то пошло не так... Повторите попытку позже.");
+            }});
+    }
+
     function saveRequestChanges(reqId, reqScId, reqParentRespId, reqText) {
-        var request;
-        if (reqParentRespId !== "") {
-
-        } else {
-            request = {reqScenario: {scId: reqScId}, reqText: reqText};
-            if (reqId === "") {
-                webix.ajax().headers({"Content-type": "application/json"}).sync().post("${pageContext.request.contextPath}/requests", request
-                    , {success: function (data, text, request) {
-                        data = JSON.parse(data);
-                        webix.message("Изменения внесены успешно!");
-                        $$("req_list").add({id: data.reqId, text: data.reqText});
-                    },error: function (text, data, request) {
-                        webix.alert("Что-то пошло не так... Повторите попытку позже.");
-                    }});
-
-
+        var request = {reqScenario: {scId: reqScId}, reqText: reqText};
+        if (reqId === "") {
+            if (reqParentRespId !== "") {
+                addChildRequest(reqParentRespId, request);
             } else {
-
+                addKernelRequest(request);
             }
+        } else {
+            /* TODO update request */
         }
+
         $$("index_page").enable();
         $$("req_edit_window").hide();
     }
@@ -313,14 +363,9 @@
     function saveResponseChanges(respId, respScId, respParentReqId, respText) {
         var response = {respScenario: {scId: respScId}, respText: respText};
         if (respId === "") {
-            webix.ajax().headers({"Content-type": "application/json"}).sync().post("${pageContext.request.contextPath}/requests/" + respParentReqId + "/child_response", response
-                , {success: function (data, text, request) {
-                    data = JSON.parse(data);
-                    webix.message("Изменения внесены успешно!");
-                    $$("resp_list").add({id: data.respId, text: data.respText});
-                },error: function (text, data, request) {
-                    webix.alert("Что-то пошло не так... Повторите попытку позже.");
-                }});
+            addChildResponse(respParentReqId, response);
+        } else {
+            /* TODO update response */
         }
         $$("index_page").enable();
         $$("resp_edit_window").hide();

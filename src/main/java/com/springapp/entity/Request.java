@@ -115,4 +115,16 @@ public class Request extends ResourceSupport {
         return reqId.equals(request.reqId);
     }
 
+    @Override
+    public String toString() {
+        return "Request{" +
+                "reqId=" + reqId +
+                ", reqText='" + reqText + '\'' +
+                ", reqPrior=" + reqPrior +
+                ", reqScenario=" + reqScenario +
+                ", reqState=" + reqState +
+                ", childResponseList=" + childResponseList +
+                ", parentResponseList=" + parentResponseList +
+                '}';
+    }
 }

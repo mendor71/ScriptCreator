@@ -14,6 +14,10 @@
 <body>
 <p><input type="button" value="Create USER" id="user_create"/></p>
 
+
+<p><input type="button" value="Get Prev Item" id="prev_item"/></p>
+<p><input type="button" value="Get Next Item" id="next_item"/></p>
+
 </body>
 </html>
 <script>
@@ -33,4 +37,35 @@
       }
     });
   });
+
+  $("#prev_item").click(function () {
+      var item = prevItems.pop();
+      if (item !== undefined) {
+          nextItems.push(item);
+          alert(JSON.stringify(item))
+      }
+  });
+
+  $("#next_item").click(function () {
+      var item = nextItems.pop();
+      if (item !== undefined) {
+          prevItems.push(item);
+          alert(JSON.stringify(item))
+      }
+  });
+
+
+  var prevItems = [];
+  var nextItems = [];
+
+  preLoad();
+
+  function preLoad() {
+      var prev_item = {type: "req", id: 1};
+      prevItems.push(prev_item);
+      prev_item = {type: "resp", id: 1};
+      prevItems.push(prev_item);
+      prev_item = {type: "req", id: 2};
+      prevItems.push(prev_item);
+  }
 </script>
