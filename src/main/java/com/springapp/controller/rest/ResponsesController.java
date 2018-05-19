@@ -35,13 +35,13 @@ public class ResponsesController {
     }
 
     @RequestMapping(value = "/parent_request/{reqId}", method = RequestMethod.GET)
-    public Iterable<Response> findResponsesByParentRequestId(@PathVariable Long reqId) {
-        return responsesService.findResponsesByParentRequestId(reqId);
+    public Iterable<Response> findResponsesByParentRequestId(@PathVariable Long reqId, @RequestParam(value = "justActive", required = false) Boolean justActive) {
+        return responsesService.findResponsesByParentRequestId(reqId, justActive == null ? true : justActive);
     }
 
     @RequestMapping(value = "/child_request/{reqId}", method = RequestMethod.GET)
-    public Iterable<Response> findResponsesByChildRequestId(@PathVariable Long reqId) {
-        return responsesService.findResponsesByChildRequestId(reqId);
+    public Iterable<Response> findResponsesByChildRequestId(@PathVariable Long reqId, @RequestParam(value = "justActive", required = false) Boolean justActive) {
+        return responsesService.findResponsesByChildRequestId(reqId, justActive == null ? true : justActive);
     }
 
     @RequestMapping(method = RequestMethod.POST)

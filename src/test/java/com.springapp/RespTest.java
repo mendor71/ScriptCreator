@@ -18,7 +18,7 @@ public class RespTest {
 
     @Test
     public void testFindByParentRequestListContais() {
-        Iterable<Response> responses = responsesService.findResponsesByParentRequestId(7L);
+        Iterable<Response> responses = responsesService.findResponsesByParentRequestId(7L, true);
         responses.forEach(System.out::println);
     }
 }

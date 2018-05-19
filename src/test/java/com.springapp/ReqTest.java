@@ -18,12 +18,12 @@ public class ReqTest {
 
     @Test
     public void testListContainingCondition() {
-        System.out.println(requestsService.findByParentResponseId(7L));
+        System.out.println(requestsService.findByParentResponseId(7L, true));
     }
 
     @Test
     public void testLoadKernelScenarioRequestList() {
-        Iterable<Request> kernelRequest = requestsService.findRequestsByScenarioId(1L, true);
+        Iterable<Request> kernelRequest = requestsService.findRequestsByScenarioId(1L, true, false);
         kernelRequest.forEach(System.out::println);
     }
 }

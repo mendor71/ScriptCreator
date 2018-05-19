@@ -30,21 +30,33 @@ public class RequestsService {
         return requestRepository.findOne(reqId);
     }
 
-    public Iterable<Request> findRequestsByScenarioId(Long scId, boolean kernel) {
+    public Iterable<Request> findRequestsByScenarioId(Long scId, boolean kernel, boolean justActive) {
         if (!kernel)
-            return requestRepository.findByReqScenarioScId(scId);
+            if (justActive)
+                return requestRepository.findByReqScenarioScIdAndReqStateStateId(scId, stateRepository.findByStateName(appProperties.getDefaultState()).getStateId());
+            else
+                return requestRepository.findByReqScenarioScId(scId);
         else
-            return requestRepository.findByReqScenarioScIdAndParentResponseListIsNull(scId);
+            if (justActive)
+                return requestRepository.findByReqScenarioScIdAndReqStateStateIdAndParentResponseListIsNull(scId, stateRepository.findByStateName(appProperties.getDefaultState()).getStateId());
+            else
+                return requestRepository.findByReqScenarioScIdAndParentResponseListIsNull(scId);
     }
 
-    public Iterable<Request> findByParentResponseId(Long respId) {
+    public Iterable<Request> findByParentResponseId(Long respId, boolean justActive) {
         List<Response> list = Collections.singletonList(responsesService.findResponseById(respId));
-        return requestRepository.findByParentResponseListContaining(list);
+        if (justActive)
+            return requestRepository.findByParentResponseListContainingAndReqStateStateId(list, stateRepository.findByStateName(appProperties.getDefaultState()).getStateId());
+        else
+            return requestRepository.findByParentResponseListContaining(list);
     }
 
-    public Iterable<Request> findByChildResponseId(Long respId) {
+    public Iterable<Request> findByChildResponseId(Long respId, boolean justActive) {
         List<Response> list = Collections.singletonList(responsesService.findResponseById(respId));
-        return requestRepository.findByChildResponseListContaining(list);
+        if (justActive)
+            return requestRepository.findByChildResponseListContainingAndReqStateStateId(list, stateRepository.findByStateName(appProperties.getDefaultState()).getStateId());
+        else
+            return requestRepository.findByChildResponseListContaining(list);
     }
 
     public Request createRequest(Request request) {

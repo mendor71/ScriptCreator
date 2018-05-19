@@ -39,14 +39,22 @@ public class ResponsesService {
         return responseRepository.findByRespScenarioScId(scId);
     }
 
-    public Iterable<Response> findResponsesByParentRequestId(Long reqId) {
+    public Iterable<Response> findResponsesByParentRequestId(Long reqId, boolean justActive) {
         List<Request> requests = Collections.singletonList(requestsService.findRequestById(reqId));
-        return responseRepository.findByParentRequestListContaining(requests);
+
+        if (justActive)
+            return responseRepository.findByParentRequestListContainingAndRespStateStateId(requests, stateRepository.findByStateName(appProperties.getDefaultState()).getStateId());
+        else
+            return responseRepository.findByParentRequestListContaining(requests);
     }
 
-    public Iterable<Response> findResponsesByChildRequestId(Long reqId) {
+    public Iterable<Response> findResponsesByChildRequestId(Long reqId, boolean justActive) {
         List<Request> requests = Collections.singletonList(requestsService.findRequestById(reqId));
-        return responseRepository.findByChildRequestListContaining(requests);
+
+        if (justActive)
+            return responseRepository.findByChildRequestListContainingAndRespStateStateId(requests, stateRepository.findByStateName(appProperties.getDefaultState()).getStateId());
+        else
+            return responseRepository.findByChildRequestListContaining(requests);
     }
 
     public Response createResponse(Response response) {

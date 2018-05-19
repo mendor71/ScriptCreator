@@ -24,18 +24,20 @@ public class RequestsController {
     }
 
     @RequestMapping(value = "/scenario/{scId}", method = RequestMethod.GET)
-    public Iterable<Request> findRequestsByScenarioId(@PathVariable Long scId, @RequestParam(value = "kernel", required = false) boolean kernel) {
-        return requestsService.findRequestsByScenarioId(scId, kernel);
+    public Iterable<Request> findRequestsByScenarioId(@PathVariable Long scId
+            , @RequestParam(value = "kernel", required = false) boolean kernel
+            , @RequestParam(value = "justActive", required = false) Boolean justActive) {
+        return requestsService.findRequestsByScenarioId(scId, kernel, justActive == null ? true : justActive);
     }
 
     @RequestMapping(value = "/parent_response/{respId}", method = RequestMethod.GET)
-    public Iterable<Request> findRequestsByParentResponseId(@PathVariable Long respId) {
-        return requestsService.findByParentResponseId(respId);
+    public Iterable<Request> findRequestsByParentResponseId(@PathVariable Long respId, @RequestParam(value = "justActive", required = false) Boolean justActive) {
+        return requestsService.findByParentResponseId(respId, justActive == null ? true : justActive);
     }
 
     @RequestMapping(value = "/child_response/{respId}", method = RequestMethod.GET)
-    public Iterable<Request> findRequestsByChildResponseId(@PathVariable Long respId) {
-        return requestsService.findByChildResponseId(respId);
+    public Iterable<Request> findRequestsByChildResponseId(@PathVariable Long respId, @RequestParam(value = "justActive", required = false) Boolean justActive) {
+        return requestsService.findByChildResponseId(respId, justActive == null ? true : justActive);
     }
 
     @RequestMapping(method = RequestMethod.POST)
