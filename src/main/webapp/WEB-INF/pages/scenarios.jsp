@@ -27,6 +27,7 @@
     var current_obj_type = "req";
     var current_element_id = -1;
 
+    var kernel_data;
     var next_items = [];
     var prev_items = [];
 
@@ -104,7 +105,7 @@
                             ,data:[
                                 {id:"add_item", value:"Добавить элемент", submenu: [
                                     {id: "add_new", value: "Добавить новый"}
-                                    , {id: "add_exists", value: "Выбрать существующий"}
+                                    /*, {id: "add_exists", value: "Выбрать существующий"}*/
                                 ]}
                                 ,{ id:"change_item", value:"Изменить элемент" }
                                 ,{ id:"remove_item", value:"Удалить элемент" }
@@ -132,16 +133,30 @@
                                         $$("add_old_item_window").show();
                                         $$("index_page").disable();
                                     } else if (id === "change_item") {
-
+                                        if ($$("data_list").getSelectedId() !== "") {
+                                            var selectedId = $$("data_list").getSelectedId();
+                                            if (current_obj_type === 'req')
+                                                setRequestEditWindow(selectedId, current_element_id === -1 ? "" : current_element_id, $$("scenarioCombo").getValue(), $$("data_list").getItem(selectedId).text);
+                                            else
+                                                setResponseEditWindow(selectedId, current_element_id === -1 ? "" : current_element_id, $$("scenarioCombo").getValue(), $$("data_list").getItem(selectedId).text);
+                                        } else {
+                                            webix.alert("Необходимо выбрать элемент!");
+                                        }
                                     } else if (id === "remove_item") {
-                                        webix.confirm({text: "Вы уверены?", callback: function (result) {
-                                            if (result) {
-                                                if (current_obj_type === "req")
-                                                    removeChildRequest(current_element_id === -1 ? null : current_element_id, $$("data_list").getSelectedId());
-                                                else
-                                                    removeChildResponse(current_element_id, $$("data_list").getSelectedId());
-                                            }
-                                        }});
+                                        if ($$("data_list").getSelectedId() !== "") {
+                                            webix.confirm({
+                                                text: "Вы уверены?", callback: function (result) {
+                                                    if (result) {
+                                                        if (current_obj_type === "req")
+                                                            removeChildRequest(current_element_id === -1 ? null : current_element_id, $$("data_list").getSelectedId());
+                                                        else
+                                                            removeChildResponse(current_element_id, $$("data_list").getSelectedId());
+                                                    }
+                                                }
+                                            });
+                                        } else {
+                                            webix.alert("Необходимо выбрать элемент!");
+                                        }
                                     }
                                 }
                             }
@@ -154,6 +169,7 @@
                             onItemClick: function (id) {
 
                             }, onItemDblClick: function (id) {
+                                $$("prev_step").enable();
                                 saveCurrentContent(prev_items);
                                 current_element_id = id;
 
@@ -170,16 +186,22 @@
                         }}
                         ,{height: 25}
                         ,{cols: [
-                            {},{view: "button", label: "Шаг назад", width: 150, click: function () {
+                            {},{view: "button", id: "prev_step", disabled: true, label: "Шаг назад", width: 150, click: function () {
                                 switchDataListContent(prev_items, next_items);
+                                if (prev_items.length === 0)
+                                    this.disable();
+                                $$("next_step").enable();
                             }}
                             ,{width: 25}
-                            ,{view: "button", label: "К корневым", width: 150, click: function () {
-
+                            ,{view: "button", id: "base_step", label: "К корневым", width: 150, click: function () {
+                                switchDataListContentToKernel();
                             }}
                             ,{width: 25}
-                            ,{view: "button", label: "Шаг вперед", width: 150, click: function () {
+                            ,{view: "button", id: "next_step", disabled: true, label: "Шаг вперед", width: 150, click: function () {
                                 switchDataListContent(next_items, prev_items);
+                                if (next_items.length === 0)
+                                    this.disable();
+                                $$("prev_step").enable();
                             }},{}
                         ]}
                     ]}
@@ -192,6 +214,23 @@
     webix.Date.startOnMonday=true;
 
     loadScenarios(true);
+
+    function switchDataListContentToKernel() {
+        current_element_id = kernel_data.current_element_id;
+        current_obj_type = kernel_data.type;
+        $$("list_label").config.label = kernel_data.label;
+        $$("list_label").refresh();
+        $$("data_list").clearAll();
+        for (var i = 0; i < kernel_data.list.length; i++) {
+            $$("data_list").add({id: kernel_data.list[i].id, text: kernel_data.list[i].text});
+        }
+
+        prev_items = [];
+        next_items = [];
+
+        $$("next_step").disable();
+        $$("prev_step").disable();
+    }
 
     function switchDataListContent(extractFrom, appendIn) {
         var switch_to = extractFrom.pop();
@@ -282,8 +321,13 @@
         webix.ajax().sync().get("${pageContext.request.contextPath}/requests/scenario/" + scId, {kernel: true}, {
             success: function (data, text, request) {
                 data = JSON.parse(data);
-                for (var i = 0; i < data.length; i++)
-                    $$("data_list").add({id: data[i].reqId, text: data[i].reqText});
+                var kernelList = [];
+                for (var i = 0; i < data.length; i++) {
+                    var listElement = {id: data[i].reqId, text: data[i].reqText}
+                    $$("data_list").add(listElement);
+                    kernelList.push(listElement);
+                }
+                kernel_data = {type: "req", current_element_id: -1, label: "Корневые вопросы", list: kernelList}
             }, error: function (data, text, request) {
                 webix.alert("Что-то пошло не так... Повторите попытку позже.");
             }
@@ -438,6 +482,34 @@
             }});
     }
 
+    function updateRequest(reqId, request) {
+        webix.ajax().headers({"Content-type": "application/json"}).sync()
+            .put("${pageContext.request.contextPath}/requests/" + reqId, request
+                , {success: function (data, text, request) {
+                    data = JSON.parse(data);
+
+                    webix.message("Изменения внесены успешно!");
+                    $$("data_list").remove(reqId);
+                    $$("data_list").add({id: data.reqId, text: data.reqText});
+                },error: function (text, data, request) {
+                    webix.alert("Что-то пошло не так... Повторите попытку позже.");
+                }});
+    }
+
+    function updateResponse(respId, response) {
+        webix.ajax().headers({"Content-type": "application/json"}).sync()
+            .put("${pageContext.request.contextPath}/responses/" + respId, response
+                , {success: function (data, text, request) {
+                    data = JSON.parse(data);
+
+                    webix.message("Изменения внесены успешно!");
+                    $$("data_list").remove(respId);
+                    $$("data_list").add({id: data.respId, text: data.respText});
+                },error: function (text, data, request) {
+                    webix.alert("Что-то пошло не так... Повторите попытку позже.");
+                }});
+    }
+
     function saveRequestChanges(reqId, reqScId, reqParentRespId, reqText) {
         var request = {reqScenario: {scId: reqScId}, reqText: reqText};
         if (reqId === "") {
@@ -447,7 +519,7 @@
                 addKernelRequest(request);
             }
         } else {
-            /* TODO update request */
+            updateRequest(reqId, request);
         }
 
         $$("index_page").enable();
@@ -459,7 +531,7 @@
         if (respId === "") {
             addChildResponse(respParentReqId, response);
         } else {
-            /* TODO update response */
+            updateResponse(respId, response);
         }
         $$("index_page").enable();
         $$("resp_edit_window").hide();
@@ -539,7 +611,7 @@
             , elements: [
                 {view: "text", id: "req_id", label: "ID вопроса", labelWidth: 195, readonly: true}
                 ,{view: "text", id: "req_sc_id", label: "ID сценария", labelWidth: 195, readonly: true}
-                ,{view: "text", id: "req_parent_resp_id", label: "Родительский ответ", labelWidth: 195, readonly: true}
+                ,{view: "text", id: "req_parent_resp_id", label: "ID Родительский ответ", labelWidth: 195, readonly: true}
                 ,{view: "text", id: "req_text", label: "Текст вопроса", labelWidth: 195}
                 ,{cols: [
                     {},{view: "button", type: "form", value: "Сохранить", click: function () {
@@ -569,7 +641,7 @@
             , elements: [
                 {view: "text", id: "resp_id", label: "ID ответа", labelWidth: 195, readonly: true}
                 ,{view: "text", id: "resp_sc_id", label: "ID сценария", labelWidth: 195, readonly: true}
-                ,{view: "text", id: "resp_parent_req_id", label: "Родительский вопрос", labelWidth: 195, readonly: true}
+                ,{view: "text", id: "resp_parent_req_id", label: "ID Родительский вопрос", labelWidth: 195, readonly: true}
                 ,{view: "text", id: "resp_text", label: "Текст ответа", labelWidth: 195}
                 ,{cols: [
                     {},{view: "button", type: "form", value: "Сохранить", click: function () {

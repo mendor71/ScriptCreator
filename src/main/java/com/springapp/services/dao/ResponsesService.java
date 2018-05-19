@@ -80,16 +80,16 @@ public class ResponsesService {
             dbResp.setRespScenario(scenarioRepository.findOne(response.getRespScenario().getScId()));
 
         if (response.getRespState() != null && response.getRespState().getStateId() != null
-                && (dbResp.getRespState() == null || dbResp.getRespState().equals(response.getRespState())))
+                && (dbResp.getRespState() == null || !dbResp.getRespState().equals(response.getRespState())))
             dbResp.setRespState(stateRepository.findOne(response.getRespState().getStateId()));
 
-        if (response.getRespText() != null && dbResp.getRespText().equals(response.getRespText()))
+        if (response.getRespText() != null && !dbResp.getRespText().equals(response.getRespText()))
             dbResp.setRespText(response.getRespText());
 
-        if (response.getRespPrior() != null && dbResp.getRespPrior().equals(response.getRespPrior()))
+        if (response.getRespPrior() != null && !dbResp.getRespPrior().equals(response.getRespPrior()))
             dbResp.setRespPrior(response.getRespPrior());
 
-        return responseRepository.save(response);
+        return responseRepository.save(dbResp);
     }
 
     public JSONAware deleteResponse(Long respId) {
