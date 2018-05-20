@@ -32,10 +32,10 @@ public class CategoriesService {
     }
 
     public Category createCategory(Category category) {
-        if (category.getCatStateId() == null && category.getCatStateId().getStateId() != null) {
-            State state = stateRepository.findByStateName(appProperties.getDefaultState());
-            category.setCatStateId(state);
-        }
+        if (category.getCatStateId() != null && category.getCatStateId().getStateId() != null)
+            category.setCatStateId(stateRepository.findOne(category.getCatStateId().getStateId()));
+        else
+            category.setCatStateId(stateRepository.findByStateName(appProperties.getDefaultState()));
 
         return categoryRepository.save(category);
     }

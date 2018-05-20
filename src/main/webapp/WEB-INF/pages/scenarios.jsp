@@ -66,6 +66,7 @@
                         , {view: "button", width: 200, value: "Изменить", click: function () {
                             if ($$("scenarioCombo").getValue() !== "") {
                                 setScenarioEditWindow($$("scenarioCombo").getValue(), $$("scenarioCombo").getText());
+                                $$("data_list").clearAll();
                             } else {
                                 webix.alert("Выберите сценарий для изменения!");
                             }
@@ -79,6 +80,7 @@
                                                 if ($$("delCheckbox").getValue() === 0) {
                                                     $$("scenarioCombo").getPopup().getList().remove($$("scenarioCombo").getValue());
                                                 }
+                                                $$("data_list").clearAll();
                                             },error: function (text, data, request) {
                                                 webix.alert("Что-то пошло не так... Повторите попытку позже.");
                                             }});

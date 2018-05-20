@@ -28,7 +28,7 @@
         , rows: [
             {type: "toolbar", cols:[
                 {}
-                ,{view: "label", label: "NoName, Вас приветствует сервис TypeNameHere!", align: "center"}
+                ,{view: "label", label: "Вас приветствует сервис %ServiceName%!", align: "center"}
                 ,{}
             ]}
             ,{height: 25}
@@ -36,15 +36,17 @@
                 cols: [
                     {}
                     ,{rows: [
-                        {view: "button", value: "Работать, НЕГРЫ!"}
-                        ,{view: "button", value: "Работа с категориями", click: function () {
+                        {view: "button", value: "Работа со сценариями", click: function () {
+                          webix.send("${pageContext.request.contextPath}/menu/scenarios", null, "GET");
+                        }},
+                        {view: "button", value: "Работа с категориями", click: function () {
                             webix.send("${pageContext.request.contextPath}/menu/categories", null, "GET");
                         }}
-                        ,{view: "button", value: "Работа со сценариями", click: function () {
-                            webix.send("${pageContext.request.contextPath}/menu/scenarios", null, "GET");
-                        }}
-                        ,{view: "button", value: "Администрирование пользлователей", click: function () {
+                        /*,{view: "button", value: "Администрирование пользлователей", click: function () {
                             webix.send("${pageContext.request.contextPath}/menu/user_admin", null, "GET");
+                        }}*/
+                        ,{view: "button", value: "Выйти", click: function () {
+                            webix.send("${pageContext.request.contextPath}/logout", null, "GET");
                         }}
                     ]}
                     ,{}
