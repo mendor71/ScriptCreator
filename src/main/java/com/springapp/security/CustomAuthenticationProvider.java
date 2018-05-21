@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashSet;
@@ -21,12 +22,16 @@ import java.util.Set;
 
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-    private PasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder passwordEncoder;
+    private UserRepository userRepository;
+    private AppProperties appProperties;
 
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private AppProperties appProperties;
+    public CustomAuthenticationProvider(BCryptPasswordEncoder passwordEncoder, UserRepository userRepository, AppProperties appProperties) {
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+        this.appProperties = appProperties;
+    }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -44,6 +49,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     private UsernamePasswordAuthenticationToken authByUserNameAndPassword(String userName, String password) {
         User user = userRepository.findByUserLogin(userName);
 
+
         if (!passwordEncoder.matches(password, user.getUserPassword())) {
             throw new BadCredentialsException("1000");
         }
@@ -57,14 +63,5 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             roles.add(new SimpleGrantedAuthority(r.getRoleName()));
         }
         return new UsernamePasswordAuthenticationToken(userName, password, roles);
-    }
-
-
-    public PasswordEncoder getPasswordEncoder() {
-        return passwordEncoder;
-    }
-
-    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
     }
 }

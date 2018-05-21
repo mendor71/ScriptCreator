@@ -17,8 +17,14 @@ import static com.springapp.util.JSONResponse.*;
 @RestController
 @RequestMapping(value = "/responses")
 public class ResponsesController {
-    @Autowired private ResponsesService responsesService;
-    @Autowired private ResponsesRelationsService responsesRelationsService;
+    private ResponsesService responsesService;
+    private ResponsesRelationsService responsesRelationsService;
+
+    @Autowired
+    public ResponsesController(ResponsesService responsesService, ResponsesRelationsService responsesRelationsService) {
+        this.responsesService = responsesService;
+        this.responsesRelationsService = responsesRelationsService;
+    }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{respId}", method = RequestMethod.GET)

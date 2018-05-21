@@ -16,9 +16,16 @@ import static com.springapp.util.JSONResponse.*;
 
 @Service
 public class CategoriesService {
-    @Autowired private CategoryRepository categoryRepository;
-    @Autowired private StateRepository stateRepository;
-    @Autowired private AppProperties appProperties;
+    private CategoryRepository categoryRepository;
+    private StateRepository stateRepository;
+    private AppProperties appProperties;
+
+    @Autowired
+    public CategoriesService(CategoryRepository categoryRepository, StateRepository stateRepository, AppProperties appProperties) {
+        this.categoryRepository = categoryRepository;
+        this.stateRepository = stateRepository;
+        this.appProperties = appProperties;
+    }
 
     public Iterable<Category> findAll(boolean justActive) {
         if (justActive)

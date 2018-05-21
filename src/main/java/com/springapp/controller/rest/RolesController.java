@@ -12,9 +12,14 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/roles")
 public class RolesController {
+    private RolesService rolesService;
+    private UserRolesService userRolesService;
 
-    @Autowired private RolesService rolesService;
-    @Autowired private UserRolesService userRolesService;
+    @Autowired
+    public RolesController(RolesService rolesService, UserRolesService userRolesService) {
+        this.rolesService = rolesService;
+        this.userRolesService = userRolesService;
+    }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(method = RequestMethod.GET)

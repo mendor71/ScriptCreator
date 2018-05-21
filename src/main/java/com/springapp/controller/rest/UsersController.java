@@ -15,7 +15,12 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 @RestController
 @RequestMapping(value = "/users")
 public class UsersController {
-    @Autowired private UsersService usersService;
+    private UsersService usersService;
+
+    @Autowired
+    public UsersController(UsersService usersService) {
+        this.usersService = usersService;
+    }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(method = RequestMethod.GET)

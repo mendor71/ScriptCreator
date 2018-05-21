@@ -14,9 +14,16 @@ import static com.springapp.util.JSONResponse.*;
 
 @Service
 public class ResponsesRelationsService {
-    @Autowired private RequestRepository requestRepository;
-    @Autowired private ResponseRepository responseRepository;
-    @Autowired private RequestsService requestsService;
+    private RequestRepository requestRepository;
+    private ResponseRepository responseRepository;
+    private RequestsService requestsService;
+
+    @Autowired
+    public ResponsesRelationsService(RequestRepository requestRepository, ResponseRepository responseRepository, RequestsService requestsService) {
+        this.requestRepository = requestRepository;
+        this.responseRepository = responseRepository;
+        this.requestsService = requestsService;
+    }
 
     public ResponseEntity addChildRequest(Long respId, Request request) {
         Response response = responseRepository.findOne(respId);

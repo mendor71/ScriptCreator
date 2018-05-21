@@ -12,8 +12,12 @@ import static com.springapp.util.JSONResponse.*;
 
 @Service
 public class RolesService {
-    @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    public RolesService(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
 
     public List<Role> getAllRoles() {
         Iterable<Role> roles = roleRepository.findAll();

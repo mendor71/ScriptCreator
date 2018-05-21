@@ -13,10 +13,20 @@ import static com.springapp.util.JSONResponse.*;
 
 @Service
 public class ScenariosService {
-    @Autowired private ScenarioRepository scenarioRepository;
-    @Autowired private CategoryRepository categoryRepository;
-    @Autowired private StateRepository stateRepository;
-    @Autowired private AppProperties appProperties;
+    private ScenarioRepository scenarioRepository;
+    private CategoryRepository categoryRepository;
+    private StateRepository stateRepository;
+    private UsersService usersService;
+    private AppProperties appProperties;
+
+    @Autowired
+    public ScenariosService(ScenarioRepository scenarioRepository, CategoryRepository categoryRepository, StateRepository stateRepository, UsersService usersService, AppProperties appProperties) {
+        this.scenarioRepository = scenarioRepository;
+        this.categoryRepository = categoryRepository;
+        this.stateRepository = stateRepository;
+        this.usersService = usersService;
+        this.appProperties = appProperties;
+    }
 
     public Iterable<Scenario> findAll(boolean justActive) {
         if (justActive)
@@ -29,7 +39,7 @@ public class ScenariosService {
         return scenarioRepository.findOne(scId);
     }
 
-    public Scenario createScenario(Scenario scenario) {
+    public Scenario createScenario(Scenario scenario, String ownerLogin) {
         if (scenario.getScStateId() != null && scenario.getScStateId().getStateId() != null)
             scenario.setScStateId(stateRepository.findOne(scenario.getScStateId().getStateId()));
         else
@@ -39,6 +49,8 @@ public class ScenariosService {
             scenario.setScCatId(categoryRepository.findOne(scenario.getScCatId().getCatId()));
         else
             scenario.setScCatId(null);
+
+        scenario.setScOwnerUserId(usersService.findUserByLogin(ownerLogin));
         return scenarioRepository.save(scenario);
     }
 
@@ -56,7 +68,9 @@ public class ScenariosService {
 
     public JSONAware deleteScenario(Long scId) {
         Scenario scenario = scenarioRepository.findOne(scId);
-        if (scenario == null) { return createNotFoundResponse("Сценарий не найден по ID"); }
+        if (scenario == null) {
+            return createNotFoundResponse("Сценарий не найден по ID");
+        }
 
         scenario.setScStateId(stateRepository.findByStateName(appProperties.getDefaultDeletedState()));
         scenarioRepository.save(scenario);

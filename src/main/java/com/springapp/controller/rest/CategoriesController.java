@@ -12,7 +12,12 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 @RestController
 @RequestMapping("/categories")
 public class CategoriesController {
-    @Autowired private CategoriesService categoriesService;
+    private CategoriesService categoriesService;
+
+    @Autowired
+    public CategoriesController(CategoriesService categoriesService) {
+        this.categoriesService = categoriesService;
+    }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(method = RequestMethod.GET)

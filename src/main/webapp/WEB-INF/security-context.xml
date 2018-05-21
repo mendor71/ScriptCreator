@@ -30,9 +30,7 @@
         <secutity:authentication-provider ref="customAuthenticationProvider"/>
     </secutity:authentication-manager>
 
-    <bean id="customAuthenticationProvider" class="com.springapp.security.CustomAuthenticationProvider">
-        <property name="passwordEncoder" ref="bCryptEncoder"/>
-    </bean>
+    <bean id="customAuthenticationProvider" class="com.springapp.security.CustomAuthenticationProvider"/>
 
     <bean id="authenticationFailureHandler"
                 class="org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler">

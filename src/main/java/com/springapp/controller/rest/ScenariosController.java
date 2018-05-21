@@ -13,7 +13,12 @@ import static com.springapp.util.JSONResponse.*;
 @RestController
 @RequestMapping(value = "/scenarios")
 public class ScenariosController {
-    @Autowired private ScenariosService scenariosService;
+    private ScenariosService scenariosService;
+
+    @Autowired
+    public ScenariosController(ScenariosService scenariosService) {
+        this.scenariosService = scenariosService;
+    }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(method = RequestMethod.GET)

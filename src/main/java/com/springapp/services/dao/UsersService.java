@@ -1,7 +1,6 @@
 package com.springapp.services.dao;
 
 import com.springapp.appcfg.AppProperties;
-import com.springapp.entity.Category;
 import com.springapp.entity.Role;
 import com.springapp.entity.State;
 import com.springapp.entity.User;
@@ -15,33 +14,37 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import static com.springapp.util.JSONResponse.*;
 
 @Service
 public class UsersService {
-    @Autowired private UserRepository userRepository;
-    @Autowired private RoleRepository roleRepository;
-    @Autowired private AppProperties appProperties;
-    @Autowired private StateRepository stateRepository;
-    @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private UserRepository userRepository;
+    private RoleRepository roleRepository;
+    private AppProperties appProperties;
+    private StateRepository stateRepository;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public Iterable<User> getAllUsers() {
+    @Autowired
+    public UsersService(UserRepository userRepository, RoleRepository roleRepository, AppProperties appProperties, StateRepository stateRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.appProperties = appProperties;
+        this.stateRepository = stateRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
+
+    public Iterable<User> findAllUsers() {
         return userRepository.findAll();
     }
 
-    public User getUserById(Long userId) {
+    public User findUserById(Long userId) {
         return userRepository.findOne(userId);
     }
 
-    public List<Category> getUserCategories(Long userId) {
-        User user = userRepository.findOne(userId);
-        return user.getUserCategoriesList();
+    public User findUserByLogin(String login) {
+        return userRepository.findByUserLogin(login);
     }
-
 
     public JSONAware createUser(User user) {
         if (user.getUserRolesList() == null || user.getUserRolesList().size() == 0) {

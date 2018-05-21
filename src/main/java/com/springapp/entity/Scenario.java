@@ -3,6 +3,7 @@ package com.springapp.entity;
 import org.springframework.hateoas.ResourceSupport;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,9 +29,9 @@ public class Scenario extends ResourceSupport {
     @ManyToOne
     private User scOwnerUserId;
 
-    @JoinTable(name = "user_scenarios_access", joinColumns = {@JoinColumn(name = "uca_sc_id")}, inverseJoinColumns = {@JoinColumn(name = "uca_user_id")})
+    @JoinTable(name = "user_scenarios_access", joinColumns = {@JoinColumn(name = "usa_sc_id")}, inverseJoinColumns = {@JoinColumn(name = "usa_user_id")})
     @ManyToMany
-    private List<User> scAccessUsers;
+    private List<User> scAccessUsers = new ArrayList<>();
 
     public Long getScId() {
         return scId;
@@ -89,5 +90,17 @@ public class Scenario extends ResourceSupport {
         Scenario scenario = (Scenario) o;
 
         return scId != null ? scId.equals(scenario.scId) : scenario.scId == null;
+    }
+
+    @Override
+    public String toString() {
+        return "Scenario{" +
+                "scId=" + scId +
+                ", scCatId=" + scCatId +
+                ", scName='" + scName + '\'' +
+                ", scStateId=" + scStateId +
+                ", scOwnerUserId=" + scOwnerUserId +
+                ", scAccessUsers=" + scAccessUsers +
+                '}';
     }
 }

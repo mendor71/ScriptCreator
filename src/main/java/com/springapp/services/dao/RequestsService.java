@@ -19,12 +19,24 @@ import static com.springapp.util.JSONResponse.*;
 
 @Service
 public class RequestsService {
-    @Autowired private RequestRepository requestRepository;
-    @Autowired private ScenarioRepository scenarioRepository;
-    @Autowired private StateRepository stateRepository;
-    @Autowired private AppProperties appProperties;
+    private RequestRepository requestRepository;
+    private ScenarioRepository scenarioRepository;
+    private StateRepository stateRepository;
+    private AppProperties appProperties;
+    private ResponsesService responsesService;
 
-    @Autowired private ResponsesService responsesService;
+    @Autowired
+    public RequestsService(RequestRepository requestRepository, ScenarioRepository scenarioRepository, StateRepository stateRepository, AppProperties appProperties) {
+        this.requestRepository = requestRepository;
+        this.scenarioRepository = scenarioRepository;
+        this.stateRepository = stateRepository;
+        this.appProperties = appProperties;
+    }
+
+    @Autowired
+    public void setResponsesService(ResponsesService responsesService) {
+        this.responsesService = responsesService;
+    }
 
     public Request findRequestById(Long reqId) {
         return requestRepository.findOne(reqId);

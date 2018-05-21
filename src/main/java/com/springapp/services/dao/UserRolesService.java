@@ -15,8 +15,14 @@ import static com.springapp.util.JSONResponse.*;
 
 @Service
 public class UserRolesService {
-    @Autowired private UserRepository userRepository;
-    @Autowired private RoleRepository roleRepository;
+    private UserRepository userRepository;
+    private RoleRepository roleRepository;
+
+    @Autowired
+    public UserRolesService(UserRepository userRepository, RoleRepository roleRepository) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+    }
 
     public JSONAware addRole(Long userId, Long roleId) {
 

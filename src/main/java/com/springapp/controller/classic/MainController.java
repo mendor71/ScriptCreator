@@ -1,5 +1,6 @@
 package com.springapp.controller.classic;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,16 +18,19 @@ public class MainController {
         return "index";
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(method = RequestMethod.GET, value = "/menu/categories")
     public String categoriesPage(ModelMap modelMap) {
         return "categories";
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(method = RequestMethod.GET, value = "/menu/scenarios")
     public String requestResponsePage(ModelMap modelMap) {
         return "scenarios";
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "testUsers", method = RequestMethod.GET)
     public String testUsers(ModelMap modelMap) {
         return "test";
