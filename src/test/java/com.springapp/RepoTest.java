@@ -20,7 +20,7 @@ public class RepoTest {
 
     @Test
     public void testFindOne() {
-       List<User> user = userRepo.findByUserLogin("tester_1");
+       User user = userRepo.findByUserLogin("tester_1");
        System.out.println(user);
     }
 

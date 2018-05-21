@@ -22,9 +22,6 @@ public class Category extends ResourceSupport {
     @ManyToOne
     private State catStateId;
 
-    @ManyToMany(mappedBy = "userCategoriesList")
-    private List<User> categoryUsersList = new ArrayList<User>();
-
     public Category() {
     }
 
@@ -56,14 +53,6 @@ public class Category extends ResourceSupport {
 
     public void setCatStateId(State catStateId) {
         this.catStateId = catStateId;
-    }
-
-    public List<User> getCategoryUsersList() {
-        return categoryUsersList;
-    }
-
-    public void setCategoryUsersList(List<User> categoryUsersList) {
-        this.categoryUsersList = categoryUsersList;
     }
 
     @Override

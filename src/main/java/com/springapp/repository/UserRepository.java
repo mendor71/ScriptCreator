@@ -9,9 +9,5 @@ import java.util.List;
  * Created by Mendor on 22.12.2017.
  */
 public interface UserRepository extends CrudRepository<User, Long> {
-
-    List<User> findByUserLogin(String userLogin);
-
-    List<User> findByUserLastName(String lastName);
-
+    User findByUserLogin(String userLogin);
 }

@@ -29,10 +29,6 @@ public class User extends ResourceSupport {
     @Column(name = "user_password")
     private String userPassword;
 
-    @JoinTable(name = "users_categories_access", joinColumns = {@JoinColumn(name = "uca_user_id")}, inverseJoinColumns = {@JoinColumn(name = "uca_cat_id")})
-    @ManyToMany(fetch = FetchType.LAZY)
-    private List<Category> userCategoriesList = new ArrayList<Category>();
-
     @JoinTable(name = "user_roles", joinColumns = {@JoinColumn(name = "ur_user_id")}, inverseJoinColumns = {@JoinColumn(name = "ur_role_id")})
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> userRolesList = new ArrayList<Role>();
@@ -119,14 +115,6 @@ public class User extends ResourceSupport {
         this.userRolesList = userRolesList;
     }
 
-    public List<Category> getUserCategoriesList() {
-        return userCategoriesList;
-    }
-
-    public void setUserCategoriesList(List<Category> userCategoriesList) {
-        this.userCategoriesList = userCategoriesList;
-    }
-
     @Override
     public String toString() {
         return "User{" +
@@ -136,7 +124,6 @@ public class User extends ResourceSupport {
                 ", userFirstName='" + userFirstName + '\'' +
                 ", userMiddleName='" + userMiddleName + '\'' +
                 ", userPassword='" + userPassword + '\'' +
-                ", userCategoriesList=" + userCategoriesList +
                 ", userRolesList=" + userRolesList +
                 ", userStateId=" + userStateId +
                 '}';
