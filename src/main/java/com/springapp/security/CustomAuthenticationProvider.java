@@ -49,6 +49,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     private UsernamePasswordAuthenticationToken authByUserNameAndPassword(String userName, String password) {
         User user = userRepository.findByUserLogin(userName);
 
+        if (user == null) {
+            throw new BadCredentialsException("1000");
+        }
 
         if (!passwordEncoder.matches(password, user.getUserPassword())) {
             throw new BadCredentialsException("1000");
