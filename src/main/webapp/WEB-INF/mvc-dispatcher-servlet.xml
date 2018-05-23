@@ -70,6 +70,5 @@
         <property name="defaultDeletedState" value="Deleted"/>
         <property name="defaultCategory" value="Unknown"/>
     </bean>
-
     <tx:annotation-driven/>
 </beans>

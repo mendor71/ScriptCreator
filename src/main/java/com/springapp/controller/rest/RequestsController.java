@@ -1,6 +1,7 @@
 package com.springapp.controller.rest;
 
 
+import com.springapp.IncludeAPI;
 import com.springapp.entity.Request;
 import com.springapp.entity.Response;
 import com.springapp.services.dao.RequestsService;
@@ -23,12 +24,14 @@ public class RequestsController {
         this.requestsRelationsService = requestsRelationsService;
     }
 
+    @IncludeAPI
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{reqId}", method = RequestMethod.GET)
     public Request findRequestById(@PathVariable Long reqId) {
         return requestsService.findRequestById(reqId);
     }
 
+    @IncludeAPI
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/scenario/{scId}", method = RequestMethod.GET)
     public Iterable<Request> findRequestsByScenarioId(@PathVariable Long scId
@@ -37,46 +40,53 @@ public class RequestsController {
         return requestsService.findRequestsByScenarioId(scId, kernel, justActive == null ? true : justActive);
     }
 
+    @IncludeAPI
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/parent_response/{respId}", method = RequestMethod.GET)
     public Iterable<Request> findRequestsByParentResponseId(@PathVariable Long respId, @RequestParam(value = "justActive", required = false) Boolean justActive) {
         return requestsService.findByParentResponseId(respId, justActive == null ? true : justActive);
     }
 
+    @IncludeAPI
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/child_response/{respId}", method = RequestMethod.GET)
     public Iterable<Request> findRequestsByChildResponseId(@PathVariable Long respId, @RequestParam(value = "justActive", required = false) Boolean justActive) {
         return requestsService.findByChildResponseId(respId, justActive == null ? true : justActive);
     }
 
+    @IncludeAPI
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(method = RequestMethod.POST)
     public Request createRequest(@RequestBody Request request) {
         return requestsService.createRequest(request);
     }
 
+    @IncludeAPI
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{reqId}/child_response", method = RequestMethod.POST)
     public ResponseEntity addChildResponse(@PathVariable Long reqId, @RequestBody Response response) {
         return requestsRelationsService.addChildResponse(reqId, response);
     }
 
+    @IncludeAPI
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{reqId}", method = RequestMethod.PUT)
     public Request updateRequest(@PathVariable Long reqId, @RequestBody Request request) {
         return requestsService.updateRequest(reqId, request);
     }
 
+    @IncludeAPI
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{reqId}", method = RequestMethod.DELETE)
     public JSONAware deleteRequest(@PathVariable Long reqId) {
         return requestsService.deleteRequest(reqId);
     }
 
+    @IncludeAPI
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{reqId}/child_response/{respId}", method = RequestMethod.DELETE)
     public JSONAware removeChildResponse(@PathVariable Long reqId, @PathVariable Long respId) {
-        return  requestsRelationsService.removeChildResponse(reqId, respId);
+        return requestsRelationsService.removeChildResponse(reqId, respId);
     }
 
 }

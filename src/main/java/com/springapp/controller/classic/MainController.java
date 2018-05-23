@@ -1,5 +1,7 @@
 package com.springapp.controller.classic;
 
+import com.springapp.services.RestMappingApiDescriptionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -12,10 +14,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 @RequestMapping("/")
 public class MainController {
-
     @RequestMapping(method = RequestMethod.GET)
     public String printWelcome(ModelMap modelMap) {
         return "index";
+    }
+
+    @RequestMapping(value = "/api", method = RequestMethod.GET)
+    public String api(ModelMap modelMap) {
+        return "api";
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")

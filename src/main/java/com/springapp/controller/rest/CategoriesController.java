@@ -1,5 +1,6 @@
 package com.springapp.controller.rest;
 
+import com.springapp.IncludeAPI;
 import com.springapp.entity.Category;
 import com.springapp.services.dao.CategoriesService;
 import org.json.simple.JSONAware;
@@ -19,12 +20,14 @@ public class CategoriesController {
         this.categoriesService = categoriesService;
     }
 
+    @IncludeAPI
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(method = RequestMethod.GET)
     public Iterable<Category> findAll(@RequestParam(value = "justActive", required = false) boolean justActive) {
         return categoriesService.findAll(justActive);
     }
 
+    @IncludeAPI
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{catId}", method = RequestMethod.GET)
     public Category getCategoryById(@PathVariable Long catId) {
@@ -34,18 +37,21 @@ public class CategoriesController {
         return category;
     }
 
+    @IncludeAPI
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(method = RequestMethod.POST)
     public Category createCategory(@RequestBody Category category) {
         return categoriesService.createCategory(category);
     }
 
+    @IncludeAPI
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/{catId}", method = RequestMethod.PUT)
     public Category updateCategory(@PathVariable Long catId, @RequestBody Category category) {
         return categoriesService.updateCategory(catId, category);
     }
 
+    @IncludeAPI
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/{catId}", method = RequestMethod.DELETE)
     public JSONAware deleteCategory(@PathVariable Long catId) {

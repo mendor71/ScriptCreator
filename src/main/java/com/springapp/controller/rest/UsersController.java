@@ -1,5 +1,6 @@
 package com.springapp.controller.rest;
 
+import com.springapp.IncludeAPI;
 import com.springapp.entity.Category;
 import com.springapp.entity.User;
 import com.springapp.services.dao.UsersService;
@@ -22,6 +23,7 @@ public class UsersController {
         this.usersService = usersService;
     }
 
+    @IncludeAPI
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(method = RequestMethod.GET)
     public List<User> getAllUsers() {
@@ -35,6 +37,7 @@ public class UsersController {
         return userList;
     }
 
+    @IncludeAPI
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     public User getUserById(@PathVariable Long userId) {
@@ -45,18 +48,21 @@ public class UsersController {
         return user;
     }
 
+    @IncludeAPI
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(method = RequestMethod.POST)
     public JSONAware createUser(@RequestBody User user) {
         return usersService.createUser(user);
     }
 
+    @IncludeAPI
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(method = RequestMethod.PUT)
     public JSONAware updateUser(@RequestBody User user) {
         return usersService.updateUser(user);
     }
 
+    @IncludeAPI
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
     public JSONAware deleteUser(@PathVariable Long userId) {
