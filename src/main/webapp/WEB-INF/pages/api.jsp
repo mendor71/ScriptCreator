@@ -72,20 +72,27 @@
 
                     tbody.appendChild(tr_head);
 
-                    for (var n = 0; n < data[i].methodList.length; n++) {
+                    var methods = data[i].methodList;
+                    methods.sort(function (c_obj, o_obj) {
+                        if (c_obj.method > o_obj.method) return 1;
+                        if (c_obj.method < o_obj.method) return -1;
+                        if (c_obj.method === o_obj.method) return 0;
+                    });
+
+                    for (var n = 0; n < methods.length; n++) {
                         var tr = document.createElement("tr");
 
                         var td_url = document.createElement("td");
-                        td_url.appendChild(document.createTextNode(data[i].methodList[n].url));
+                        td_url.appendChild(document.createTextNode(data[i].methods[n].url));
 
                         var td_action = document.createElement("td");
-                        td_action.appendChild(document.createTextNode(data[i].methodList[n].actionName));
+                        td_action.appendChild(document.createTextNode(data[i].methods[n].actionName));
 
                         var td_method = document.createElement("td");
-                        td_method.appendChild(document.createTextNode(data[i].methodList[n].method));
+                        td_method.appendChild(document.createTextNode(data[i].methods[n].method));
 
                         var td_params = document.createElement("td");
-                        td_params.appendChild(document.createTextNode(data[i].methodList[n].params));
+                        td_params.appendChild(document.createTextNode(data[i].methods[n].params));
 
                         tr.appendChild(td_url);
                         tr.appendChild(td_action);
