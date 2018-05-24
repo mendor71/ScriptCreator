@@ -20,7 +20,7 @@ public class CategoriesController {
         this.categoriesService = categoriesService;
     }
 
-    @IncludeAPI
+    @IncludeAPI(arguments = "Boolean justActive")
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(method = RequestMethod.GET)
     public Iterable<Category> findAll(@RequestParam(value = "justActive", required = false) boolean justActive) {
@@ -37,14 +37,14 @@ public class CategoriesController {
         return category;
     }
 
-    @IncludeAPI
+    @IncludeAPI(arguments = {"Category category"})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(method = RequestMethod.POST)
     public Category createCategory(@RequestBody Category category) {
         return categoriesService.createCategory(category);
     }
 
-    @IncludeAPI
+    @IncludeAPI(arguments = {"Category category"})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/{catId}", method = RequestMethod.PUT)
     public Category updateCategory(@PathVariable Long catId, @RequestBody Category category) {

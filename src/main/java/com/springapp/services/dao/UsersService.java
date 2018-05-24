@@ -64,8 +64,26 @@ public class UsersService {
     }
 
 
-    public JSONAware updateUser(User user) {
-        userRepository.save(user);
+    public JSONAware updateUser(Long userId, User user) {
+        User dbUser = userRepository.findOne(userId);
+
+        if (user.getUserStateId() != null && user.getUserStateId().getStateId() != null
+                && (dbUser.getUserStateId() == null || dbUser.getUserStateId().equals(user.getUserStateId())))
+            dbUser.setUserStateId(stateRepository.findOne(user.getUserStateId().getStateId()));
+
+        if (user.getUserPassword() != null && !bCryptPasswordEncoder.encode(user.getUserPassword()).equals(dbUser.getUserPassword()))
+            dbUser.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
+
+        if (user.getUserFirstName() != null && !user.getUserFirstName().equals(dbUser.getUserFirstName()))
+            dbUser.setUserFirstName(user.getUserFirstName());
+
+        if (user.getUserLastName() != null && !user.getUserLastName().equals(dbUser.getUserLastName()))
+            dbUser.setUserLastName(user.getUserLastName());
+
+        if (user.getUserMiddleName() != null && !user.getUserMiddleName().equals(dbUser.getUserMiddleName()))
+            dbUser.setUserMiddleName(user.getUserMiddleName());
+
+        userRepository.save(dbUser);
         return createOKResponse("Данные пользователя успешно обновлены!");
     }
 

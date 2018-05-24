@@ -43,14 +43,14 @@ public class RolesController {
         return userRolesService.addRole(userId, roleId);
     }
 
-    @IncludeAPI
+    @IncludeAPI(arguments = "Role role")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(method = RequestMethod.POST)
     public JSONAware createRole(@RequestBody Role role) {
         return rolesService.createRole(role);
     }
 
-    @IncludeAPI
+    @IncludeAPI(arguments = "Role role")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(method = RequestMethod.PUT)
     public JSONAware updateRole(@RequestBody Role role) {

@@ -41,35 +41,35 @@ public class ResponsesController {
         return responsesService.findResponsesByScenarioId(scId);
     }
 
-    @IncludeAPI
+    @IncludeAPI(arguments = "Boolean justActive")
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/parent_request/{reqId}", method = RequestMethod.GET)
     public Iterable<Response> findResponsesByParentRequestId(@PathVariable Long reqId, @RequestParam(value = "justActive", required = false) Boolean justActive) {
         return responsesService.findResponsesByParentRequestId(reqId, justActive == null ? true : justActive);
     }
 
-    @IncludeAPI
+    @IncludeAPI(arguments = "Boolean justActive")
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/child_request/{reqId}", method = RequestMethod.GET)
     public Iterable<Response> findResponsesByChildRequestId(@PathVariable Long reqId, @RequestParam(value = "justActive", required = false) Boolean justActive) {
         return responsesService.findResponsesByChildRequestId(reqId, justActive == null ? true : justActive);
     }
 
-    @IncludeAPI
+    @IncludeAPI(arguments = "Response response")
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(method = RequestMethod.POST)
     public Response createResponse(@RequestBody Response response) {
         return responsesService.createResponse(response);
     }
 
-    @IncludeAPI
+    @IncludeAPI(arguments = "Request request")
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{respId}/child_request", method = RequestMethod.POST)
     public ResponseEntity addChildRequest(@PathVariable Long respId, @RequestBody Request request) {
         return responsesRelationsService.addChildRequest(respId, request);
     }
 
-    @IncludeAPI
+    @IncludeAPI(arguments = "Response response")
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{respId}", method = RequestMethod.PUT)
     public Response updateResponse(@PathVariable Long respId, @RequestBody Response response) {

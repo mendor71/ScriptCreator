@@ -28,14 +28,14 @@ public class ScenariosController {
         return scenariosService.findAll(justActive);
     }
 
-    @IncludeAPI
+    @IncludeAPI(arguments = "Scenario scenario")
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(method = RequestMethod.POST)
     public Scenario createScenario(@RequestBody Scenario scenario, Authentication authentication) {
         return scenariosService.createScenario(scenario, authentication.getPrincipal().toString());
     }
 
-    @IncludeAPI
+    @IncludeAPI(arguments = "Scenario scenario")
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{scId}", method = RequestMethod.PUT)
     public Scenario updateScenario(@PathVariable Long scId, @RequestBody Scenario scenario) {

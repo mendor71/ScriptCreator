@@ -33,7 +33,7 @@ public class IncludeApiInvokerContextListener implements ApplicationListener<Con
     public void onApplicationEvent(ContextRefreshedEvent event) {
         ApplicationContext applicationContext = event.getApplicationContext();
         String[] beanDefinitionNames = applicationContext.getBeanDefinitionNames();
-        for (String name: beanDefinitionNames) {
+        for (String name : beanDefinitionNames) {
             BeanDefinition beanDefinition = factory.getBeanDefinition(name);
             String originalClassName = beanDefinition.getBeanClassName();
             try {
@@ -45,18 +45,20 @@ public class IncludeApiInvokerContextListener implements ApplicationListener<Con
 
                     Method[] methods = aClass.getMethods();
 
-                    for (Method m: methods) {
+                    for (Method m : methods) {
                         if (m.isAnnotationPresent(IncludeAPI.class) && m.isAnnotationPresent(RequestMapping.class)) {
                             StringBuilder params = new StringBuilder("(");
                             boolean first = true;
 
-                            Parameter[] parameters = m.getParameters();
-                            for (Parameter parameter: parameters) {
-                                if (first) {
-                                    params.append(parameter.getType().getName()).append(" ").append(parameter.getName());
-                                    first = false;
-                                } else {
-                                    params.append(",").append(parameter.getType().getName()).append(" ").append(parameter.getName());
+                            if (m.getAnnotation(IncludeAPI.class).arguments().length != 0) {
+                                String[] parameters = m.getAnnotation(IncludeAPI.class).arguments();
+                                for (String parameter : parameters) {
+                                    if (first) {
+                                        params.append(parameter);
+                                        first = false;
+                                    } else {
+                                        params.append(",").append(parameter);
+                                    }
                                 }
                             }
                             params.append(")");
@@ -65,7 +67,7 @@ public class IncludeApiInvokerContextListener implements ApplicationListener<Con
                             String value = requestMapping.value().length != 0 ? requestMapping.value()[0] : "";
                             String method = requestMapping.method().length != 0 ? requestMapping.method()[0].name() : "GET";
 
-                            dictionary.addRequestMappingDescription(basePath + value, method, m.getName(), basePath.replace("/",""), params.toString());
+                            dictionary.addRequestMappingDescription(basePath + value, method, m.getName(), basePath.replace("/", ""), params.toString());
                         }
                     }
                 }

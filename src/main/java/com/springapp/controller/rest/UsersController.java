@@ -1,7 +1,6 @@
 package com.springapp.controller.rest;
 
 import com.springapp.IncludeAPI;
-import com.springapp.entity.Category;
 import com.springapp.entity.User;
 import com.springapp.services.dao.UsersService;
 import org.json.simple.JSONAware;
@@ -48,18 +47,18 @@ public class UsersController {
         return user;
     }
 
-    @IncludeAPI
+    @IncludeAPI(arguments = "Users user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(method = RequestMethod.POST)
     public JSONAware createUser(@RequestBody User user) {
         return usersService.createUser(user);
     }
 
-    @IncludeAPI
+    @IncludeAPI(arguments = "Users user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(method = RequestMethod.PUT)
-    public JSONAware updateUser(@RequestBody User user) {
-        return usersService.updateUser(user);
+    @RequestMapping(value = "/{userId}", method = RequestMethod.PUT)
+    public JSONAware updateUser(@PathVariable Long userId, @RequestBody User user) {
+        return usersService.updateUser(userId, user);
     }
 
     @IncludeAPI

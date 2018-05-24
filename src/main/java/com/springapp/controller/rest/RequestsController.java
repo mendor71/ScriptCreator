@@ -31,7 +31,7 @@ public class RequestsController {
         return requestsService.findRequestById(reqId);
     }
 
-    @IncludeAPI
+    @IncludeAPI(arguments = {"Boolean kernel","Boolean justActive"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/scenario/{scId}", method = RequestMethod.GET)
     public Iterable<Request> findRequestsByScenarioId(@PathVariable Long scId
@@ -40,35 +40,35 @@ public class RequestsController {
         return requestsService.findRequestsByScenarioId(scId, kernel, justActive == null ? true : justActive);
     }
 
-    @IncludeAPI
+    @IncludeAPI(arguments = {"Boolean justActive"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/parent_response/{respId}", method = RequestMethod.GET)
     public Iterable<Request> findRequestsByParentResponseId(@PathVariable Long respId, @RequestParam(value = "justActive", required = false) Boolean justActive) {
         return requestsService.findByParentResponseId(respId, justActive == null ? true : justActive);
     }
 
-    @IncludeAPI
+    @IncludeAPI(arguments = {"Boolean justActive"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/child_response/{respId}", method = RequestMethod.GET)
     public Iterable<Request> findRequestsByChildResponseId(@PathVariable Long respId, @RequestParam(value = "justActive", required = false) Boolean justActive) {
         return requestsService.findByChildResponseId(respId, justActive == null ? true : justActive);
     }
 
-    @IncludeAPI
+    @IncludeAPI(arguments = {"Request request"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(method = RequestMethod.POST)
     public Request createRequest(@RequestBody Request request) {
         return requestsService.createRequest(request);
     }
 
-    @IncludeAPI
+    @IncludeAPI(arguments = {"Response response"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{reqId}/child_response", method = RequestMethod.POST)
     public ResponseEntity addChildResponse(@PathVariable Long reqId, @RequestBody Response response) {
         return requestsRelationsService.addChildResponse(reqId, response);
     }
 
-    @IncludeAPI
+    @IncludeAPI(arguments = {"Request request"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{reqId}", method = RequestMethod.PUT)
     public Request updateRequest(@PathVariable Long reqId, @RequestBody Request request) {
