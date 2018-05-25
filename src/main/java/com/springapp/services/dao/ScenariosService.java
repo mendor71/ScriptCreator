@@ -50,7 +50,8 @@ public class ScenariosService {
         else
             scenario.setScCatId(null);
 
-        scenario.setScOwnerUserId(usersService.findUserByLogin(ownerLogin));
+        if (ownerLogin != null)
+            scenario.setScOwnerUserId(usersService.findUserByLogin(ownerLogin));
         return scenarioRepository.save(scenario);
     }
 

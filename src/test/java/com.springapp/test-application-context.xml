@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="com.springapp"/>
+    <jpa:repositories base-package="com.springapp.repository"/>
+
+    <import resource="test-security-context.xml"/>
+
+    <bean id="hibernateJpaVendorAdapter"
+          class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url" value="jdbc:postgresql://82.146.60.121/sc_test"/>
+        <property name="username" value="postgres"/>
+        <property name="password" value="postgres"/>
+    </bean>
+
+    <bean id="entityManagerFactory" name="managerFactory"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="jpaVendorAdapter" ref="hibernateJpaVendorAdapter"/>
+        <!-- Set JPA properties -->
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL95Dialect</prop>
+                <prop key="javax.persistence.schema-generation.database.action">none</prop>
+                <prop key="hibernate.ejb.use_class_enhancer">true</prop>
+                <prop key="hibernate.enable_lazy_load_no_trans">true</prop>
+                <prop key="hibernate.show_sql">true</prop>
+            </props>
+        </property>
+        <!-- Set base package of your entities -->
+        <property name="packagesToScan" value="com.springapp.entity"/>
+        <!-- Set share cache mode -->
+        <property name="sharedCacheMode" value="ENABLE_SELECTIVE"/>
+        <!-- Set validation mode -->
+        <property name="validationMode" value="NONE"/>
+    </bean>
+
+    <bean id="transactionManager"
+          class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <bean class="com.springapp.appcfg.AppProperties">
+        <property name="userDefaultRole" value="TEST"/>
+        <property name="userDefaultState" value="TEST"/>
+        <property name="userDisabledState" value="TEST"/>
+        <property name="accessEnableLink" value="TEST"/>
+        <property name="defaultState" value="TEST"/>
+        <property name="defaultDeletedState" value="TEST"/>
+        <property name="defaultCategory" value="TEST"/>
+    </bean>
+
+    <tx:annotation-driven/>
+</beans>

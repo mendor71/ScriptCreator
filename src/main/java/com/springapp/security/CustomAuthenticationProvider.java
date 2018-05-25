@@ -33,6 +33,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         this.appProperties = appProperties;
     }
 
+    public CustomAuthenticationProvider() {
+    }
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String userName = authentication.getPrincipal().toString();
